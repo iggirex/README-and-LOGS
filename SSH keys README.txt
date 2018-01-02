@@ -11,3 +11,4 @@ Go to "SSH and GPG"
 Click "ADD SSH KEY"
 copy SSH key from "~/.ssh/<your key name>" and paste it into GH. Key should look something like:
 "ssh -rsa AAAB390wpufjdADFASDHJFDISFADIDFSLIKFDSILJfdhjskafhlduifFJDAIFAHFDLAJKFHDNLAIFHJASFLKIS/FDJNASLIFDALFHNDSL/FDSJAIFDJJLSdfshokli/ndjkolshjfDFSJIlkdfhsilfjdiolFDjdsfikldSolicvs934028r0jifdflj98043pfjidapdfiiao"
+Now you can clone and SSH into repo, good to keep track of what keys are what in your .ssh with a README.txt
