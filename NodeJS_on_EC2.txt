@@ -1,0 +1,59 @@
+ZumDash
+
+Sign in AWS
+
+Set Region to Oregon
+
+Get in Elastic Beanstalk
+
+
+ 
+
+Node Server on EC2
+help from: https://hackernoon.com/tutorial-creating-and-managing-a-node-js-server-on-aws-part-1-d67367ac5171
+
+"Launch Instance" -- create virtual machine on AWS
+	- choose Ubuntu 16.04 server
+	- choose "free tier (t2 micro)"
+	- Next configure Instance Details (leave default)
+	- Next Add Storage (keep default 8 gigs)
+	- Next Add Tags - add a tag to keep track of this instance
+	- Next Configure Security Group - Click "Add Rule", select HTTP, this will open up server to the web
+	- Review and Launch
+	- Click Create A New KeyPair - Download and save this .pem file!! Will need to get into EC2 instance
+	- Click Launch Instance
+
+	NOTE: !! Remember to stop the instance when you're not using it, this will prevent racking up time + fees -- right click on instance, under "Instance State" click "Stop"
+
+SSH into this server
+	- go to .pem file location, do "chmod 400 your-pem-file.pem" otherwise SSH won't work
+	- on "Instances" in AWS dashboard, click "Connect" (at top), this will give you the command needed to SSH from terminal on your computer, will look like: "ssh -i "tutorial.pem" ubuntu@ec2-34-216-84-185.us-west-2.compute.amazonaws.com"
+
+Install Node and Dependencies to Run Web App
+	- First install NVM to controll what version of Node you want to run: "$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash"
+	- NVM will not work until .bashrc is refreshed (try "$ nvm ls" to list versions of node available), either logout and back in, or run this command "$ source ~/.bashrc" to get NVM to work
+	- Now NVM works, but has no versions of Node yet, so "$ nvm install 8" this will install latest stable Node.js. You can install all the versions you want
+	- To use nvm : install is "$ nvm install 4.2", to uninstall is: "$ nvm uninstall 4.2", to check what versions you have installed: "$ nvm ls", to switch is: "$ nvm use 4.2", to check what version you are using: "$ node --version"
+	- Node.js is installed, whatever version you want
+	
+Creating HTTP Endpoint to Access from Web
+	- make a directory "$mkdir server", cd into it
+	- initialize Node.js project "$ npm init -y" (creates your package.json)
+	- Make a super simple Expres.js server "$npm install express --save-dev"
+	- If using git, DONT include node_modules, do this "$ echo node_modules > .gitignore", this will create .gitignore
+	- Let's make the server: "$ nano index.js"
+	- This is the simplest server you can make, basically when you hit the homepage "/" it will respond with "yo it's yer boi IgMoney WADDDUUUPP"---Copy this in:
+const express = require('express')
+const app = express()
+app.get('/', (req, res) => {
+  res.send('yo it's yer boi IgMoney WADDDUUUPP!?!')
+})
+app.listen(3000, () => console.log('Server running on port 3000'))
+
+	- Save it, quit out of Nano
+	- Start the server "$ node index.js", should say it's running on port 3000
+
+Open up Port 3000 on AWS to access Web App
+	- Leave server running, go back to AWS dashboard
+	- Go to "Security Groups" in EC2 Console, right click on security group you set up and click "edit inbound rules". We will use a "Custom TCP Rule" on "Port 3000" to open "Anywhere"
+	- Save it, NOW VISIT your public DNS URL with port 3000 and you should see yer boi Ig$!
