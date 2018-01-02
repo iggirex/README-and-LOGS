@@ -1,0 +1,13 @@
+Download Ubuntu iso
+Download Virtual Box
+Create new VM in Virtual Box
+Specify Ubuntu
+right click Ubuntu instance created, select "Settings"
+Go to "Storage"
+Under "IDE Controller" click on CD image with + on it to create new disc drive
+click "Choose Disk"
+Choose your .iso file
+
+Select "install Ubuntu into hard drive" go through all that
+
+Can ask to "restart computer", just go back to Virtual Box and at top menu click "reset machine"
