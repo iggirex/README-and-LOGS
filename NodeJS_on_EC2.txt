@@ -29,10 +29,11 @@ SSH into this server
 	- go to .pem file location, do "chmod 400 your-pem-file.pem" otherwise SSH won't work
 	- on "Instances" in AWS dashboard, click "Connect" (at top), this will give you the command needed to SSH from terminal on your computer, will look like: "ssh -i "tutorial.pem" ubuntu@ec2-34-216-84-185.us-west-2.compute.amazonaws.com"
 
-Install Node and Dependencies to Run Web App
+Install Node, NVM, and NPM and Dependencies to Run Web App
 	- First install NVM to controll what version of Node you want to run: "$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash"
 	- NVM will not work until .bashrc is refreshed (try "$ nvm ls" to list versions of node available), either logout and back in, or run this command "$ source ~/.bashrc" to get NVM to work
-	- Now NVM works, but has no versions of Node yet, so "$ nvm install 8" this will install latest stable Node.js. You can install all the versions you want
+	- Now NVM works, but has no versions of Node yet, so "$ nvm install 8" this will install latest stable Node.js. You can install all the versions you want.
+	- NPM will be installed automatically when installing Node with NVM, no need to install seperately.
 	- To use nvm : install is "$ nvm install 4.2", to uninstall is: "$ nvm uninstall 4.2", to check what versions you have installed: "$ nvm ls", to switch is: "$ nvm use 4.2", to check what version you are using: "$ node --version"
 	- Node.js is installed, whatever version you want
 	
