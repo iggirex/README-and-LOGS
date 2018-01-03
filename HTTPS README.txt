@@ -45,15 +45,43 @@ MAKING HTTPS SAMPLE PROJECT WITH LETS ENCRYPT
 
 4) Install the LETSENCRYPT Cert Bot which will generate our keys and stuff "sudo apt-get install letsencrypt" (problems in Windows, better in Ubuntu)
 
-5) Create private keys "sudo letsencrypt certonly --webroot -w ./static -d <your server url>" 
+5) Create private keys "sudo letsencrypt --webroot -w ./static -d <your server url>" 
 
 ERROR: Requested domain is not a FQDN
 --> this can point to a server url being wrong, like using http:// or :3000 or something like that
+
+ERROR: Use "certonly flag"
 
 CORRECT EXAMPLE:
 	sudo letsencrypt certonly --webroot -w ./static -d ec2-34-216-84-185.us-west-2.compute.amazonaws.com
 
 ERROR: "error creating new authz :: policy forbids issuing for name" --> AWS is blacklisted by Let's Encrypt
+---> create custom URL name so AWS name is not used, view CREAT FREE CUSTOM URL README for instructions on doing this for free
+
+ERROR: permission to /var/log/letsencrypt/letsencrypt.log denied
+---> add "sudo" at beginning of command
+
+ERROR: connection failed to examplesite.com
+---> webapp server was not running while doing this command
+
+ERROR: connection failed can't find http://examplesite.tk/.well-known/acme-challenge/fjkdsahdFASHJisfdj8409ojFS390fsFJDsi (can't find key)
+---> Web app is being served on port 3000, so now the command should look like this: "sudo letsencrypt certonly --webroot -w ./static -d examplesite.tk:3000"
+
+ERROR: Domain zumdash.tk:3000 is not a FQDN
+---> need to serve this on port 80 because Let's Encrypt doesn't like ":" or other weird symbols so we can't https a port on a website. Fuckin eh. Can do port forwarding later so after it hits port 80 it will link to a different port. or not.
+
+---> check that app is being served on plain ole' examplesite.com, without specifying any port. 
+
+ERROR: EACCESS (port 80 already being used by AWS more specifically by load balencers) also this is a type of override permission error
+---> bad solution -> run command as sudo to force it to work ERROR, sudo can't find node --> find where node is with "which node", then sudo to that PATH EXAMPLE:
+
+	sudo /home/ubuntu/.nvm/versions/node/v8.9.3/bin/node index.js
+WORKS! being served right from "examplesite.tk". great. BUT...
+this is the bad way to do it, if someone hacks into this server, they will have root access because it's being served as sudo, so this is a better way described here:
+https://medium.com/tfogo/how-to-serve-your-website-on-port-80-or-443-using-aws-load-balancers-a3b84781d730
+
+
+
 
 
 
