@@ -52,7 +52,7 @@ ERROR: Requested domain is not a FQDN
 
 ERROR: Use "certonly flag"
 
-CORRECT EXAMPLE:
+---> CORRECT EXAMPLE:
 	sudo letsencrypt certonly --webroot -w ./static -d ec2-34-216-84-185.us-west-2.compute.amazonaws.com
 
 ERROR: "error creating new authz :: policy forbids issuing for name" --> AWS is blacklisted by Let's Encrypt
@@ -79,6 +79,22 @@ ERROR: EACCESS (port 80 already being used by AWS more specifically by load bale
 WORKS! being served right from "examplesite.tk". great. BUT...
 this is the bad way to do it, if someone hacks into this server, they will have root access because it's being served as sudo, so this is a better way described here:
 https://medium.com/tfogo/how-to-serve-your-website-on-port-80-or-443-using-aws-load-balancers-a3b84781d730
+
+running "ubuntu@ip-172-31-24-114:$ sudo letsencrypt certonly --webroot -w ./static -d zumdash.tk"
+Error: The error was: PluginError('./static does not exist or is not a directory',)
+--> must run from top of project directory
+
+CONGRATULATIONS MESSAGE ON SUCCESS (friggin finally):
+
+ - Congratulations! Your certificate and chain have been saved at
+   /etc/letsencrypt/live/zumdash.tk/fullchain.pem. Your cert will
+   expire on 2018-04-03. To obtain a new version of the certificate in
+   the future, simply run Let's Encrypt again.
+ - If you like Let's Encrypt, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
 
 
 
