@@ -1,0 +1,22 @@
+Prevoious step: DEPLOYING LIVE WEBSITE or APP to the internet
+
+DEPLOYING CUSTOM URL on DNS FOR FREE:
+
+DNS is a Domain Name Service. This translates your crappy IP address of your deployed website like 45.490.34.5 to something amazing and incredible like www.incredibleveganmeltycheesepizzaattack.com !! All DNS does is when someone types in "incredibleveganmeltycheesepizzaattack.com" into their browser, the DNS checks what IP address corresponds to that incredibly cool name, then it actually goes to its IP address 45.490.34.5 and loads the website/webapp form thurr.
+
+Freenom.com
+--> a little shady, but works without putting in any credit card info, or any real personal information
+
+1) First you need a deployed server already serving your website, so like Heroku, or AWS of GH Pages
+
+2) Go to Freenom and get one of the free url extentions they have, in the checkout process it will ask for IP address or server, so you need this already
+
+3) At end of checkout it will ask for "A record" which is just the IP address
+
+EXAMPLE:
+In AWS under EC2 Instances that are running it will show a "Public IPv4 address" for the instance, like: 34.226.84.85. This is what you put in both A-record fields
+
+4) Say you are from Florida because if your state asks for taxes, then you will actually have to pay for something. You just need a correct zip code and city in that zip code. All other info can be watevz.
+
+5) Should be done, make sure to add port after website name if serving from a port other than 80 or 443. So examplesite.tk:3000
+
