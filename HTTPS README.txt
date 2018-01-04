@@ -84,16 +84,76 @@ running "ubuntu@ip-172-31-24-114:$ sudo letsencrypt certonly --webroot -w ./stat
 Error: The error was: PluginError('./static does not exist or is not a directory',)
 --> must run from top of project directory
 
-CONGRATULATIONS MESSAGE ON SUCCESS (friggin finally):
 
- - Congratulations! Your certificate and chain have been saved at
-   /etc/letsencrypt/live/zumdash.tk/fullchain.pem. Your cert will
-   expire on 2018-04-03. To obtain a new version of the certificate in
-   the future, simply run Let's Encrypt again.
- - If you like Let's Encrypt, please consider supporting our work by:
+CONGRATULATIONS -- MESSAGE ON SUCCESS -- (friggin finally):
 
-   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
-   Donating to EFF:                    https://eff.org/donate-le
+	 - Congratulations! Your certificate and chain have been saved at
+	   /etc/letsencrypt/live/zumdash.tk/fullchain.pem. Your cert will
+	   expire on 2018-04-03. To obtain a new version of the certificate in
+	   the future, simply run Let's Encrypt again.
+	 - If you like Let's Encrypt, please consider supporting our work by:
+
+	   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+	   Donating to EFF:                    https://eff.org/donate-le
+
+
+6) OK we got the SSL certs, but not done yet. Out of the box Express only uses HTTP. We can wire up https with the "https" node module.
+
+This will require 2 files (in /etc/letsencrypt/live/zumdash.tk). 1) a certificate and 2) a private key. (never share private key) also recommended copying fullchain.pem and privkey.pem into your project directory or creating symbolic link to them.
+
+Project assumes you have fullchain.pem and privkey.pem in a folder called "sslcert" in project directory
+
+Copy these .pem files into project "sudo cp fullchain.pem ~/projFolder/sslcert"
+
+7) install https, also require 'fs' to read these files, and add them to app.js
+
+app.js should look like:
+
+	const https = require("https");
+	const express = require("express");
+	const fs = require("fs");
+
+	const app = express();
+
+	//app.use(express.static("static"));
+
+	const options = {
+		cert: fs.readFileSync("./sslcert/fullchain.pem"),
+		key: fs.readFileSync("./sslcert/privkey.pem")
+	};
+
+	app.get("/", (req, res) => {
+	  res.send("yo it's yer boi IgMoney WADDDUUUPP!?!")
+	})
+	app.listen(80, () => console.log("Server running on port 80"));
+
+	https.createServer(options, app).listen(8483);
+
+8) install helmet.js (optional) to help secure express server through setting HTTP headers. This adds HSTS, removes "x-Powered-by" and "X-Frame-Options" to prevent CLICK JACKING attack.
+
+"npm install --save helmet"
+
+add this line to server
+
+	app.use(require("helmet")());
+
+9) Test for green lock on your website to see if HTTPS is up and running
+
+Error: if already in use using sudo, this command is handy to find this "ps auxwf", also "ps auxwf | grep node"
+
+
+ERROR running server while trying to create keys, 
+don't run ./letsencrypt command as sudo
+
+
+
+
+
+
+
+
+
+
 
 
 
