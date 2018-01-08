@@ -1,0 +1,212 @@
+iAWS CRUD PROJECT
+
+user: crud1
+—> programmatic access
+
+group: DynamoDBfullAccess
+—> AmazonDynamoDBFullAccess, AmazonDynamoDBFullAccesswithDataPipeline
+
+namo —> Can create new credentials at any time
+—> downloaded to crud1CREDS.csv
+
+1. Setup local Dynamo DB on computer (can be uploaded to web version later
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html#DynamoDBLocal.DownloadingAndRunning
+
+2. run this command where db was unzipped and placed, where .jar file is
+
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+
+
+
+
+
+
+
+NEW
+
+CRUD1-1
+
+1)START EC2 INSTANCE
+
+EC2 instanceP: crud1-1
+keys: crud1-1.pem 
+
+2)SETUP EC2 with Node, NVM
+
+3)INSTALL AWS SDK AND REQIRE
+
+npm install aws-sdk
+var AWS = require('aws-sdk');
+
+4)MINIMUM SETUP INCLUDES SETTING REGION AND CREDENTIALS
+add this line of code for region in app.js “AWS.config.update({region: 'us-west-2’});”
+add this for credentials: 
+	go to IAM (Identity Access Management Console) to create user (or use user already existing)
+	https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html
+	follow steps to get user key and private key
+
+Several ways to add credentials: https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
+Will use shared credentials file here:
+	in EC2 instance: “mkdir -p ~/.aws/credentials”
+	
+		[default]
+		aws_access_key_id = <YOUR_ACCESS_KEY_ID>
+		aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>	
+
+	put in access key id and secret key instead of < stuff in here >
+
+AWS will look in this file for credentials and optional environment variables (not covered here), so app does not need to manage these things
+
+The SDK works through “service object”  you can include ALL of the SDK putting this in the Node/Express server:
+	var AWS = require('aws-sdk');
+
+OR just put in the part of the SDK because according to Amazon “The amount of code to transport over the network as well as the memory overhead of your code would be substantially smaller if only the portion of the SDK you require for the Amazon S3 service was included. To require an individual service, call the require function as shown, including the service constructor in all lower case.”
+So you can do this:
+	require('aws-sdk/clients/SERVICE');
+
+Example of entire SDK to create an S3 bucket thing:
+
+	// Import the AWS SDK
+	var AWS = require('aws-sdk');
+
+	// Set credentials and region
+	// This can also be done directly on the service client
+	AWS.config.update({region: 'us-west-1', credentials: {YOUR_CREDENTIALS}});
+
+	var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+Example of pulling in an individual SDK service:
+
+	// Import the Amazon S3 service client
+	var S3 = require('aws-sdk/clients/s3');
+ 
+	// Set credentials and region
+	var s3 = new S3({
+	    apiVersion: '2006-03-01',
+	    region: 'us-west-1', 
+	    credentials: {YOUR_CREDENTIALS}
+	  });
+
+Even after importing the SDK, you still need to create objects for individual service, Amazon: “To use a feature, you must create an instance of the class that provides access to that feature. The following example shows creating a service object for DynamoDB from the AWS.DynamoDB client class.”
+
+Example:
+	var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+—> The API stuff is “locking” the API version so your program doesn’t break when AWS comes out with a new version and tries to use the new version on older code.
+
+When calling methods on service objects, parameters need to be passed in JSON
+Example:
+	s3.getObject({Bucket: 'bucketName', Key: 'keyName'});
+
+Configuring the SDK in an Express server:
+	// Load the SDK for JavaScript
+	var AWS = require('aws-sdk');
+	// Set the region 
+	AWS.config.update({region: 'us-west-2'});
+
+To create a table “Create a Node.js module with the file name ddb_createtable.js. Be sure to configure the SDK as previously shown. To access DynamoDB, create an AWS.DynamoDB service object. Create a JSON object containing the parameters needed to create a table, which in this example includes the name and data type for each attribute, the key schema, the name of the table, and the units of throughput to provision. Call the createTable method of the DynamoDB service object.”
+
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'REGION'});
+
+// Create the DynamoDB service object
+ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+var params = {
+  AttributeDefinitions: [
+    {
+      AttributeName: 'CUSTOMER_ID',
+      AttributeType: 'N'
+    },
+    {
+      AttributeName: 'CUSTOMER_NAME',
+      AttributeType: 'S'
+    }
+  ],
+  KeySchema: [
+    {
+      AttributeName: 'CUSTOMER_ID',
+      KeyType: 'HASH'
+    },
+    {
+      AttributeName: 'CUSTOMER_NAME',
+      KeyType: 'RANGE'
+    }
+  ],
+  ProvisionedThroughput: {
+    ReadCapacityUnits: 1,
+    WriteCapacityUnits: 1
+  },
+  TableName: 'CUSTOMER_LIST',
+  StreamSpecification: {
+    StreamEnabled: false
+  }
+};
+
+// Call DynamoDB to create the table
+ddb.createTable(params, function(err, data) {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data.Table.KeySchema);
+  }
+});
+
+Run node on this file: 
+	node ddb_listtables.js
+
+Now the table should be created. If ran twice, it should say “Error, table already exists”
+
+LISTING TABES, create another js file (module) for reading what tables are in the DB, call it ddb_listtables.js
+
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'REGION'});
+
+// Create the DynamoDB service object
+ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+// Call DynamoDB to retrieve the list of tables
+ddb.listTables({Limit: 10}, function(err, data) {
+  if (err) {
+    console.log("Error", err.code);
+  } else {
+    console.log("Table names are ", data.TableNames);
+  }
+});
+
+to call it do
+	node ddb_listtables.js
+
+This should give you the Names of your tables in an array
+
+DESCRIBING TABLES
+
+This will give back a schema for a given table, we’ll give the table as an argument in the command line, and the file will read it with “process.argv”  in the module.
+call this file ddb_describetable.js
+
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'REGION'});
+
+// Create the DynamoDB service object
+ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+var params = {
+  TableName: process.argv[2]
+};
+
+// Call DynamoDB to retrieve the selected table descriptions
+ddb.describeTable(params, function(err, data) {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data.Table.KeySchema);
+  }
+});
+
+Then to run this module do this command, remember to give it the table name, which you can also get from the ddb_listtables.js:
+	node ddb_describetable.js TABLE_NAME
