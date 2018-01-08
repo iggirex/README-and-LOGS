@@ -23,6 +23,8 @@ NEW
 
 CRUD1-1
 
+note --- some parts of AWS tutorial didn't work for me, I made comments on how I changed the code to work, but also filed these with Amazon so hopefully they will change their tutorial and then you can ignore all my bitching and griping.
+
 DB STUFF FROM https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/dynamodb-example-table-read-write.html
 EC2 stuff from previous knowledge/different doc
 
@@ -434,3 +436,62 @@ HOW I GOT IT TO WORK USING BOTH PRIMARY AND SORT Key
 	    console.log("Success", data);
 	  }
 	});
+
+
+WRITING BATCH ITEMS
+--> AWS docs have a JSON error, I'll just put in the correct code, but basically each PutRequest needs to be inside its own object.
+--> make a file "ddb_batchwriteitem"
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'REGION'});
+
+	// Create DynamoDB service object
+	var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+	
+	var params = {
+	  RequestItems: {
+	    "CUSTOMER_LIST": [
+	       {
+	         "PutRequest": {
+	           "Item": {
+	             "CUSTOMER_ID": { "N": "3" },
+	             "CUSTOMER_NAME": { "S": "Sir Meowsalot" },
+	               "CAT": { "S": "TRUE" },
+	               "DOG": { "S": "FALSE" }}
+	           },
+	         },
+	        {
+	          "PutRequest": {
+	           "Item": {
+	             "CUSTOMER_ID": { "N": "4" },
+	             "CUSTOMER_NAME": { "S": "Mrs. Fluffington" },
+	               "CAT": { "S": "FALSE" },
+	               "DOG": { "S": "TRUE" }
+	           }
+	          },
+	        },
+	        {
+	          "PutRequest": {
+	           "Item": {
+	             "CUSTOMER_ID": { "N": "5" },
+	             "CUSTOMER_NAME": { "S": "Sass McNass" },
+	               "CAT": { "S": "FALSE" },
+	               "DOG": { "S": "FALSE" }
+	           }
+	         }
+	       }
+	    ]
+	  }
+	};
+
+	ddb.batchWriteItem(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    console.log("Success", data);
+	  }
+	});
+
+---> to run "node ddb_batchwriteitem.js"
