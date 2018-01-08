@@ -23,6 +23,11 @@ NEW
 
 CRUD1-1
 
+DB STUFF FROM https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/dynamodb-example-table-read-write.html
+EC2 stuff from previous knowledge/different doc
+
+DIFFERENT NODE DYNAMO TUTORIAL AT https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.01.html
+
 1)START EC2 INSTANCE
 
 EC2 instanceP: crud1-1
@@ -100,9 +105,11 @@ Configuring the SDK in an Express server:
 	// Set the region
 	AWS.config.update({region: 'us-west-2'});
 
-
+-------------- CREATING, LISTING, DELETING TABLES -------------------------------------------------
 CREATING TABLE
 To create a table “Create a Node.js module with the file name ddb_createtable.js. Be sure to configure the SDK as previously shown. To access DynamoDB, create an AWS.DynamoDB service object. Create a JSON object containing the parameters needed to create a table, which in this example includes the name and data type for each attribute, the key schema, the name of the table, and the units of throughput to provision. Call the createTable method of the DynamoDB service object.”
+
+---> In these examples ALWAYS REMEMBER to change 'REGION' with your REGION, otherwise you will have a bad time.
 
 	// Load the AWS SDK for Node.js
 	var AWS = require('aws-sdk');
@@ -241,3 +248,131 @@ create a module ddb_deletetable.js, it will take a CLI argument to know which ta
 
 To run this module:
 	node ddb_deletetable.js TABLE_NAME
+
+---------------------------------------------------------------------------
+
+----------- INSERTING, UPDATING, DELETING ENTRIES IN TABLES ---------------
+
+WRITING AN ITEM
+creat a node module for inserting item into table, call it "ddb_putitem.js"
+
+--> In this file, the params will include the table name as well as a "map" (JSON) that describe the values to be put into the table according to the table schema.
+---> Change TABLE to CUSTOMER_LIST
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'REGION'});
+
+	// Create the DynamoDB service object
+	ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+	var params = {
+	  TableName: 'TABLE',
+	  Item: {
+	    'CUSTOMER_ID' : {N: '001'},
+	    'CUSTOMER_NAME' : {S: 'Richard Roe'},
+	  }
+	};
+
+	// Call DynamoDB to add the item to the table
+	ddb.putItem(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    console.log("Success", data);
+	  }
+	});
+
+This example will put in the given arguments into the table (HARD CODED!!)
+run it with:
+	node ddb_putitem.js
+
+Should say SUCCESS {}
+
+GETTING AN ITEM
+
+make a module called ddb_getitem.js
+
+The params that need to be specified are: which table will be looked at to find the item: CUSTOMER_LIST,
+The key that corresponds to the item to find the correct entry, this was specified earlier as CUSTOMER_ID
+
+You also need 'ProjectionExpression', this is just AWS' stupid way of saying "the attribute of the entry im looking for", here  we're trying to get the CUSTOMER_NAME
+
+THIS BELOW IS WRROOOOONNNGGG, but it's what AWS has on their tutorial,this will NOT WORK:
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'REGION'});
+
+	// Create the DynamoDB service object
+	ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+	var params = {
+	  TableName: 'TABLE',
+	  Key: {
+	    'KEY_NAME' : {N: '001'},
+	  },
+	  ProjectionExpression: 'ATTRIBUTE_NAME'
+	};
+
+	// Call DynamoDB to read the item from the table
+	ddb.getItem(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    console.log("Success", data.Item);
+	  }
+	});
+
+THIS IS HOW IT SHOULD BE, EXPLANATION WHY IS BELOW:
+--> get rid of projectionExpression (this is crap)
+--> The KEY NEEDS TO BE THE SPECIFIED KEYSSSS (multiple) THAT WERE SPECIFIED BACK WHEN TABLE WAS CREATED.
+remember this ole' thing?
+
+						KeySchema: [
+						  {
+							AttributeName: 'CUSTOMER_ID',
+							KeyType: 'HASH'
+						  },
+						  {
+							AttributeName: 'CUSTOMER_NAME',
+							KeyType: 'RANGE'
+						  }
+						],
+
+Wellp, we gave it a PRIMARY KEY which is a HASH of CUSTOMER_ID, but also a SORT KEY which is a RANGE of CUSTOMER_NAME
+and it needs BOTH, BOOOOTTTTHHHH damnit!
+
+But if we only have two items in the table, and we're giving both to query the entry, we'll just get the same info that we just fed it
+Thanks a lot Amazon
+So to get a more meaningful item, create an item in the table with THREE Key/Values in it either in the ddb_createitem.js OR
+the GUI for databases on your AWS Management Console. pppssshhh.
+
+So this will work:
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'us-west-2'});
+
+	// Create the DynamoDB service object
+	ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+	var params = {
+	  TableName: 'CUSTOMER_LIST',
+	  Key: {
+	    'CUSTOMER_ID' : {N: '1'},
+	    'CUSTOMER_NAME': {S: 'Richard Roe'}
+	  }
+	};
+
+	// Call DynamoDB to read the item from the table
+	ddb.getItem(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    console.log("Success", data.Item);
+	  }
+	});
