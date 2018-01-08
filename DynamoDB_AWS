@@ -538,3 +538,74 @@ entire item. For production environment, where amount of network use = $, yea yo
 	    });
 	  }
 	});
+
+
+QUERYING AND SCANNING TABLE
+In its infinite wisdon, AWS docs completely diverged from the CUSTOMER_LIST table that has been getting built all along
+Ditched it for a Table containing TV shows. I can find another tutorial with a movies DB, but not one with TV shows
+Thanks AWS, awesome
+
+According to them, this is how you would go about querying and scanning a table
+
+Querying
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'REGION'});
+
+	// Create DynamoDB service object
+	var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+	var params = {
+	  ExpressionAttributeValues: {
+	    ':s': {N: '2'},
+	    ':e' : {N: '09'},
+	    ':topic' : {S: 'PHRASE'}
+	   },
+	 KeyConditionExpression: 'Season = :s and Episode > :e',
+	 ProjectionExpression: 'Title, Subtitle',
+	 FilterExpression: 'contains (Subtitle, :topic)',
+	 TableName: 'EPISODES_TABLE'
+	};
+
+	ddb.query(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    data.Items.forEach(function(element, index, array) {
+	      console.log(element.Title.S + " (" + element.Subtitle.S + ")");
+	    });
+	  }
+	});
+
+Scanning
+
+	// Load the AWS SDK for Node.js
+	var AWS = require('aws-sdk');
+	// Set the region
+	AWS.config.update({region: 'REGION'});
+
+	// Create DynamoDB service object
+	var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+	var params = {
+	 ExpressionAttributeValues: {
+	  ":topic": {
+	    S: "PHRASE"
+	   }
+	 },
+	 FilterExpression: "contains (Subtitle, :topic)",
+	 ProjectionExpression: "Title, Subtitle",
+	 TableName: "EPISODES_TABLE"
+	};
+
+	ddb.scan(params, function(err, data) {
+	  if (err) {
+	    console.log("Error", err);
+	  } else {
+	    data.Items.forEach(function(element, index, array) {
+	      console.log(element.Title.S + " (" + element.Subtitle.S + ")");
+	    });
+	  }
+	});
