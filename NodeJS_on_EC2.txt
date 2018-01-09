@@ -7,7 +7,7 @@ Set Region to Oregon
 Get in Elastic Beanstalk
 
 
- 
+
 
 Node Server on EC2
 help from: https://hackernoon.com/tutorial-creating-and-managing-a-node-js-server-on-aws-part-1-d67367ac5171
@@ -36,7 +36,7 @@ Install Node, NVM, and NPM and Dependencies to Run Web App
 	- NPM will be installed automatically when installing Node with NVM, no need to install seperately.
 	- To use nvm : install is "$ nvm install 4.2", to uninstall is: "$ nvm uninstall 4.2", to check what versions you have installed: "$ nvm ls", to switch is: "$ nvm use 4.2", to check what version you are using: "$ node --version"
 	- Node.js is installed, whatever version you want
-	
+
 Creating HTTP Endpoint to Access from Web
 	- make a directory "$mkdir server", cd into it
 	- initialize Node.js project "$ npm init -y" (creates your package.json)
@@ -58,3 +58,12 @@ Open up Port 3000 on AWS to access Web App
 	- Leave server running, go back to AWS dashboard
 	- Go to "Security Groups" in EC2 Console, right click on security group you set up and click "edit inbound rules". We will use a "Custom TCP Rule" on "Port 3000" to open "Anywhere"
 	- Save it, NOW VISIT your public DNS URL with port 3000 and you should see yer boi Ig$!
+
+
+TO KEEP SSH SESSION FROM LOGGIN OUT
+I added this to /etc/ssh/sshd_config
+
+TCPKeepAlive yes
+ClientAliveInterval 60
+
+service sshd restart
