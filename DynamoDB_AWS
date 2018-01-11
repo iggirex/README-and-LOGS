@@ -1,23 +1,3 @@
-AWS CRUD PROJECT
-
-user: crud1
-—> programmatic access
-
-group: DynamoDBfullAccess
-—> AmazonDynamoDBFullAccess, AmazonDynamoDBFullAccesswithDataPipeline
-
-namo —> Can create new credentials at any time
-—> downloaded to crud1CREDS.csv
-
-1. Setup local Dynamo DB on computer (can be uploaded to web version later
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html#DynamoDBLocal.DownloadingAndRunning
-
-2. run this command where db was unzipped and placed, where .jar file is
-
-java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
-
-
-NEW
 
 CRUD1-1
 
@@ -27,6 +7,7 @@ DB STUFF FROM https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/
 EC2 stuff from previous knowledge/different doc
 
 DIFFERENT NODE DYNAMO TUTORIAL AT https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.01.html
+
 
 1)START EC2 INSTANCE
 
@@ -607,3 +588,44 @@ Scanning
 	    });
 	  }
 	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+other crap
+
+
+
+AWS CRUD PROJECT
+
+user: crud1
+—> programmatic access
+
+group: DynamoDBfullAccess
+—> AmazonDynamoDBFullAccess, AmazonDynamoDBFullAccesswithDataPipeline
+
+namo —> Can create new credentials at any time
+—> downloaded to crud1CREDS.csv
+
+1. Setup local Dynamo DB on computer (can be uploaded to web version later
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html#DynamoDBLocal.DownloadingAndRunning
+
+2. run this command where db was unzipped and placed, where .jar file is
+
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb

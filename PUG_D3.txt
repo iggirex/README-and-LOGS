@@ -1,0 +1,30 @@
+This README is to help understand how to use Pug and work arounds for any pain points
+
+PUG is BETTER KNOWN as JADE!! (name change because copyright issues)
+-- any information found about Jade will also apply to Pug, it's the same thing
+
+Pug is the Templating Engine this p
+
+
+PROBLEM WITH D3.js
+var thing = !{data}[0].id
+console.log("this is thing", thing)
+console.log("big ass gross message: ", !{data}[0].id)
+
+JADE/PUG doesn't want to pass it's data it gets from the server to a JS script
+
+turns it into a string, also replaces all quote marks with &quot
+
+but this seems to work in the js script: console.log("big ass gross message: ", !{data}[0].id)
+
+THIS WORKS!!:
+
+FIRST JSON stringify on server:
+
+    router.get("/", function(req, res, next) {
+      res.render("chart", {data: JSON.stringify(dbData)});
+    });
+
+SECOND, declare it script inside of !{}:
+
+    var data = !{data};
