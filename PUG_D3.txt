@@ -9,7 +9,7 @@ Pug is the Templating Engine this p
 PROBLEM WITH D3.js
 var thing = !{data}[0].id
 console.log("this is thing", thing)
-console.log("big ass gross message: ", !{data}[0].id)
+console.log("big gross message: ", !{data}[0].id)
 
 JADE/PUG doesn't want to pass it's data it gets from the server to a JS script
 
