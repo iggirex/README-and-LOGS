@@ -1,0 +1,90 @@
+An example dynamo SCAN inside a promise
+
+params are what it looks for:
+    ExpressionAttributeNames ----- This just sets variables to use later on, (necessary if using reserved keywords)
+
+    ExpressionAttributeValues ---- In this column of data, bring back ENTRIES THAT MATCH THIS VALUE
+
+    FilterExpression ------------- only bring back things that meet THIS CONDITION ()
+
+    ProjectionExpression --------- IF filter condition met, will grab these things (TOPICS and THINGS in this case)
+
+    TableName -------------------- Which table in the DB to look through
+
+
+function getItems(siteName){
+    return new Promise(function(resolve, reject){
+        let params = {
+         ExpressionAttributeNames: {
+             "#TOP": "TOPICS",
+             "#THING": "THINGS"
+          },
+         ExpressionAttributeValues: {
+          ":a": {
+            S: siteName
+           }
+         },
+         FilterExpression: "SITE_NAME = :a",
+         ProjectionExpression: "#TOP, #THING",
+         TableName: "WELL_SITES"
+        };
+
+        ddb.scan(params, function(err, data) {
+          if (err) {
+            reject(err);
+          } else {
+            siteData = data;
+            data.Items.forEach(function(element, index, array) {
+              siteTanks = data.Items[0].THINGS.L;
+              // console.log("In getItems this is daya: ", data.Items[0].TOPICS)
+              resolve(data);
+            });
+          }
+        });
+    })
+}
+
+
+--------------------------------------------------------------------------------------------
+A Dynamo QUERY example that returns a promise
+--------------------------------------------------------------------------------------------
+Query uses KeyConditionExpression, can use range key here, this is where the column to look at is specified
+
+    ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName (so "janice" for  example)
+
+    KeyConditionExpression ------- Specify TWO THINGS. Which column to look at, and what value we are looking for in that column. So we want to look through column SITE_NAME and bring back entries that have :site (refers back to variable siteName, ex: "janice")
+
+    ProjectionExpression --------- When the column SITE_NAME has any entries as "janice", bring back the ProjectionExpression, so everything in the "TOPICS" heading
+
+    TableName -------------------- Which table in the DB to look through
+
+function getTopics(siteName) {
+  return new Promise(function(resolve, reject) {
+    let params = {
+      ExpressionAttributeValues: {
+        ":site": {
+          S: siteName
+        }
+      },
+      KeyConditionExpression: "SITE_NAME = :site",
+      ProjectionExpression: "TOPICS",
+      TableName: "WELL_SITES"
+    };
+
+    ddb.query(params, function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        let topics = [];
+        Object.values(data.Items[0].TOPICS.L).forEach(function(topic) {
+            topics.push(topic.S);
+        });
+        if (topics.length >= 2) {
+          resolve(topics);
+        } else {
+          reject('Missing topics');
+        }
+      }
+    });
+  });
+}
