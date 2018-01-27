@@ -1,30 +1,40 @@
 This README is to help understand how to use Pug and work arounds for any pain points
 
-PUG is BETTER KNOWN as JADE!! (name change because copyright issues)
+PUG is BETTER KNOWN as JADE (name change because copyright issues)
 -- any information found about Jade will also apply to Pug, it's the same thing
 
-Pug is the Templating Engine this p
 
+---------->>>> PROBLEM HANDING DATA FROM PUG FRONT END TO HTML D3.JS SCRIPTS
 
-PROBLEM WITH D3.js
-var thing = !{data}[0].id
-console.log("this is thing", thing)
-console.log("big gross message: ", !{data}[0].id)
+    ---->>> #{} is used in pug code
+    ---->>> !{} is used in JS scripts inside pug code
 
-JADE/PUG doesn't want to pass it's data it gets from the server to a JS script
+        var thing = !{data}[0].id
+        console.log("this is thing", thing)
+        console.log("entire large message: ", !{data}[0].id)
 
-turns it into a string, also replaces all quote marks with &quot
+        ---->> JADE/PUG doesn't want to pass it's data it gets from the server to a JS script
+        ---->> turns it into a string, also replaces all quote marks with &quot
 
-but this seems to work in the js script: console.log("big ass gross message: ", !{data}[0].id)
+        THIS WORKS!!:
 
-THIS WORKS!!:
+        FIRST JSON stringify on server:
 
-FIRST JSON stringify on server:
+            router.get("/", function(req, res, next) {
+              res.render("chart", {data: JSON.stringify(dbData)});
+            });
 
-    router.get("/", function(req, res, next) {
-      res.render("chart", {data: JSON.stringify(dbData)});
-    });
+        SECOND, declare it script inside of !{}:
 
-SECOND, declare it script inside of !{}:
+            var data = !{data};
 
-    var data = !{data};
+---------->>>>>>> Iterating inside objects using Jade loops
+
+    --->>> In this example, siteTanks is: 
+        [ { '84382801': { LEVEL: [Object], VOLUME: [Object] } },
+          { '84382802': { LEVEL: [Object], VOLUME: [Object] } } ]
+
+          To get '84382801', you can do this in Jade/Pug:
+
+                each tank in siteTanks
+                  th #{Object.keys(tank)}
