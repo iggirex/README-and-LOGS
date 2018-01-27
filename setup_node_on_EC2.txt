@@ -1,15 +1,10 @@
-ZumDash
 
 Sign in AWS
-
 Set Region to Oregon
-
-Get in Elastic Beanstalk
-
+Get in Elastic Beanstalk or EC2 instance
 
 
-
-Node Server on EC2
+---->>> Node Server on EC2
 help from: https://hackernoon.com/tutorial-creating-and-managing-a-node-js-server-on-aws-part-1-d67367ac5171
 
 "Launch Instance" -- create virtual machine on AWS

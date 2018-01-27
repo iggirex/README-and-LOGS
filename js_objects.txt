@@ -1,0 +1,25 @@
+iterate over objects with (for in) loop
+
+---> for-in loop will by default give you object's keys
+    EXAMPLE:
+        var obj = { a: 1, b: 2, c: 3, d: { greeting: "hello", shoutout: "cookies!!"}}
+
+        for (item in obj){
+          console.log(item)
+        }
+        //a
+        //b
+        //c
+        //d
+
+
+----> to get the values of the object, use the key agains the object itself, so each iteration do key of object
+    EXAMPLE:
+
+        for (item in obj){
+          console.log(obj[item])
+        }
+        //1
+        //2
+        //3
+        //{ greeting: "hello", shoutout: "cookies!!"}
