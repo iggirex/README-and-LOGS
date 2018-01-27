@@ -23,3 +23,19 @@ iterate over objects with (for in) loop
         //2
         //3
         //{ greeting: "hello", shoutout: "cookies!!"}
+
+-----> How get into nested objects
+    EXAMPLE:
+        var obj = [
+            { '84382801': { LEVEL: [Object], VOLUME: [Object] } },
+            { '84382802': { LEVEL: [Object], VOLUME: [Object] } }
+        ]
+
+
+        obj.forEach(function(val){
+          console.log(val[Object.keys(val)])
+        })
+        // { LEVEL: [ [Function: Object] ],
+        //   VOLUME: [ [Function: Object] ] }
+
+        
