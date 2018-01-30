@@ -1,0 +1,57 @@
+SCOPE
+
+GLOBAL SCOPE -- Every scope is within global scope. If there are no other scopes, then this is the only scope.
+
+LEXICAL SCOPE -- happens everytime a function is made. spans from "f" to closing curly bracket. 
+                 variables declared in a lexical scope cannot be accessed from out of the scope, will throw error.
+                 Other code blocks made by curly braces (loops, conditionals) do not create scopes.
+                 
+EXECUTION CONTEXT -- (or In-Memory Scopes) differ from Lexical Scopes. They are built as the code is run (not written out) 
+                  -- this rules what variables are available to what scopes at run time
+                  -- for each Lexical Scope, there might be many In-Memory Scopes depending on how many times function is run
+                  -- Stores key value pairs and their contexts (scopes)
+                  
+THIS -- keyword which gets a value bound to it, like a variable except it gets bound to the correct object according to binding rules.
+     -- "this" is bound at call time to the object that calls "this"'s function. So "this" must be part of an object's method.
+     -- Example obj.fn(3, 4)
+     -- "this" keyword is always bound to the object LEFT OF THE DOT at call time. so "obj" is bound to "this".
+     
+PROTOTYPE CHAIN -- Mechanism of creating objects that resemble other objects.
+                -- Can free up memory space, avoid code duplication
+                -- Makes an object behave as if it had all the properties of another object
+                -- Does this by delegating all failed lookups to the other object.
+        ---> EX
+        var myArr = []
+        myArr.push("hey");
+
+        // myArr never had a "push" method added to it, so it looks up the prototype chain to Array.prototype.push
+        // so the failed "push" method was passed up its prototype chain and found the method in this other object.
+        
+THE OBJECT PROTOTYPE -- The uppermost object to which all javascript objects end up pointing to
+                     -- All failed lookups for javascript objects will eventually delegate up to the object prototype
+                     -- Where all basic methods are provided to all objects
+                     -- "this" keyword will point to the left of the dot, to the object that called it(even if the delegation went up the chain)
+                     -- this allows these objects to share the method and have "this" work correctly
+    --->EX
+    var obj = {}
+    obj.toString();
+    
+    // toString() will fail lookup in obj because it's empty, so then it gets delegated up from obj to the object prototype
+
+Different ways to create objects in JS
+    ---> Extending an object will create multiple objects and their methods,all holding a places in memory.
+    ---> Object.create() creates a pointer to one place in memory. So the new object points to the original object.
+    ---> Any change to the original object will be an immediate change on the Object.created object.
+
+        var gold = {a: 1};
+
+        var blue = extend({}, gold);
+        blue.b = 2
+
+        var rose = Object.create(gold)
+        rose.b = 2
+        gold.z = 3
+
+        console.log(blue.z) // error, z not defined
+        console.log(rose.z) // 3
+
