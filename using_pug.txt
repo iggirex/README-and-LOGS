@@ -4,6 +4,12 @@ PUG is BETTER KNOWN as JADE (name change because copyright issues)
 -- any information found about Jade will also apply to Pug, it's the same thing
 
 
+---> It's possible to add inline JS in Pug using a dash
+
+    - console.log(alarm.alarm_type.S)   // This show in server console, not in browser tools
+    - var this = that
+
+
 ---------->>>> PROBLEM HANDING DATA FROM PUG FRONT END TO HTML D3.JS SCRIPTS
 
     ---->>> #{} is used in pug code
@@ -30,7 +36,7 @@ PUG is BETTER KNOWN as JADE (name change because copyright issues)
 
 ---------->>>>>>> Iterating inside objects using Jade loops
 
-    --->>> In this example, siteTanks is: 
+    --->>> In this example, siteTanks is:
         [ { '84382801': { LEVEL: [Object], VOLUME: [Object] } },
           { '84382802': { LEVEL: [Object], VOLUME: [Object] } } ]
 
