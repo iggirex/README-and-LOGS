@@ -55,3 +55,56 @@ Different ways to create objects in JS
         console.log(blue.z) // error, z not defined
         console.log(rose.z) // 3
 
+Object Decorator Pattern
+    ---> This is a way to increase code reusability and cut down on duplicate code
+    ---> By creating functions that interact with objects that have similar needs, code can get better.
+    ---> This example is making different cars for a game:
+        
+        var amy = {location: 1};
+        amy.loc++;
+        var ben = {location: 9};
+        ben.loc++;
+        
+        --->Refactored to:
+        
+            var move = function(car){
+                car.loc++;
+            }
+            var amy = {location: 1};
+            move(amy);
+            var ben = {location: 9};
+            move(ben);
+            
+        ---> Refactored even more to:
+            
+            var carlike = function(obj, loc){
+                obj.loc = loc;
+                return obj;
+            }
+            var move = function(car){
+                car.loc++;
+            }
+            var amy = carlike({}, 1);
+            move(amy);
+            var ben = carlike({}, 9);
+            move(ben);
+                
+            //NOTE: (it's common to use ADJECTIVES for object decorator functions, hence 'carlike')
+            
+        ---> Refactored to include the "move" function as an obj property:
+        
+             var carlike = function(obj, loc){
+                obj.loc = loc;
+                obj.move = move;
+                return obj;
+            }
+            var move = function(){
+                this.loc++;
+            }
+            // "this" will refer to the obj to the left of the dot when move is called, so in ben.move(), 'this' is ben
+
+            var amy = carlike({}, 1);
+            amy.move();
+            var ben = carlike({}, 9);
+            ben.move();
+
