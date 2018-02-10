@@ -11,7 +11,7 @@ EXECUTION CONTEXT -- (or In-Memory Scopes) differ from Lexical Scopes. They are 
                   -- for each Lexical Scope, there might be many In-Memory Scopes depending on how many times function is run
                   -- Stores key value pairs and their contexts (scopes)
                   
-THIS -- keyword which gets a value bound to it, like a variable except it gets bound to the correct object according to binding rules.
+THIS --keyword that gets value bound to it,like variable except it gets bound to the correct object according to binding rules
      -- "this" is bound at call time to the object that calls "this"'s function. So "this" must be part of an object's method.
      -- Example obj.fn(3, 4)
      -- "this" keyword is always bound to the object LEFT OF THE DOT at call time. so "obj" is bound to "this".
@@ -30,7 +30,8 @@ PROTOTYPE CHAIN -- Mechanism of creating objects that resemble other objects.
 THE OBJECT PROTOTYPE -- The uppermost object to which all javascript objects end up pointing to
                      -- All failed lookups for javascript objects will eventually delegate up to the object prototype
                      -- Where all basic methods are provided to all objects
-                     -- "this" keyword will point to the left of the dot, to the object that called it(even if the delegation went up the chain)
+                     -- "this" keyword will point to the left of the dot, to the object that called it
+                        (even if the delegation went up the chain)
                      -- this allows these objects to share the method and have "this" work correctly
     --->EX
     var obj = {}
@@ -107,4 +108,144 @@ Object Decorator Pattern
             amy.move();
             var ben = carlike({}, 9);
             ben.move();
+
+        ---> Thinking about the IN MEMORY scope, there is ONLY ONE move function, which is pointed to by all the cars
+        ---> As opposed to including the move function in carlike, which creates a a seperate move function for each car.
+        ---> EX:
+        
+            var carlike = function(obj, loc){
+                obj.loc = loc;
+                obj.move = function(){ obj.loc++ }
+                return obj;
+            }
+            // This is EXPENSIVE, creating lots of identical functions for each object produced
+            
+Different and Same Objects
+
+    var makeObj = function(){
+        return {property: "example"};
+    }
+    var ob1 = makeObj();
+    var ob2 = makeObj();
+
+  ---> How will this be computed with the strict comparison operator??
+
+    ob1 === ob2
+
+  ---> Even though the same exact line of code was used to create both objects, they are themselves different objects
+  ---> Changes made to one object will not have any effect on the other object, identical twins in real life arent same person
+
+Classes VS Object Decorators
+
+  ---> With the decorator pattern we passed an object into the object decorator function
+  ---> Instead we can just ask the function to give us an object back
+  ---> ONLY DIFFERENCE is that a CLASS will build the object it will augment // decorator will accept the object it augments
+  ---> Give classes different sort of name, instead of an ADJECTIVE, give a CAPITALIZED NOUN
+  EX:
+  
+      var Car = function(loc){
+      var obj = {loc: loc};
+      obj.move = function(){ obj.loc++; };
+          return obj;
+      }
+      // These functions are called CONSTRUCTOR FUNCTIONS, they build the objects that qualify as members of the CLASS
+      //  The class is the notion of a category of things and all entailed code that supports that category
+      // CONSTRUCTOR is the function used to produce new instance of a class
+      // Objects returned by CONTRUCTOR are called INSTANCES OF THEIR CLASS
+      // INSTANTIATION calling the constructor to build a new INSTANCE
+      
+Functional Class Pattern with Shared Methods (FUNCTIONAL SHARED PATTERN)
+
+    ---> To prevent the same exact function (move) to be created with every class instance, all instances can share one func
+
+            var Car = function(loc){
+                var obj = {loc: loc);
+                obj.move = move;
+                return obj;
+            }
+            var move = function(){
+                this.loc++;
+            }
+            
+    ---> move is still being used twice, in the constructor and then again in the function
+    ---> this can be problematic when lots of functions will be shared, lots of duplicate code
+    ---> We can put all these shared functions in one object, then pass those functions to the instance being created
+    
+    
+            var Car = function(loc){
+                var obj = {loc: loc);
+                extend(obj, methods);
+                return obj;
+            }
+            var methods = {
+                move: function(){
+                    this.loc++;
+                },
+                on: function(){},
+                off: function(){}
+            }
+            //Here we can write out all the shared functions in one object and add them to the class in a SINGLE LINE
+            // EXTEND IS NOT A NATIVE JS FUNCTION (available in many libraries)
+            
+    --> Issue with above code is that it's not clear that 'methods' is bundled up with the Car class
+    --> Here we can tie in methods to the class that it belongs to:
+
+            var Car = function(loc){
+                var obj = {loc: loc);
+                extend(obj, Car.methods);
+                return obj;
+            }
+            Car.methods = {
+                move: function(){
+                    this.loc++;
+                },
+                on: function(){},
+                off: function(){}
+            }
+            // This is TRICKY POINT, people forget that FUNCTIONS ARE JUST OBJECTS
+            // Can have properties added to them JUST LIKE ANY OBJECT
+            // No relationship between what you get when a function is invoked and the properties stored into the func object
+            // EASY TO THINK that because we add properties to a function, some kind of MAGIC is going to happen
+            // There is NO MAGIC, just simple property access
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
