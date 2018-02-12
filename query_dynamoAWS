@@ -49,12 +49,18 @@ function getItems(siteName){
 A Dynamo QUERY example that returns a promise
 --------------------------------------------------------------------------------------------
 Query uses KeyConditionExpression, can use range key here, this is where the column to look at is specified
+---> Keycondition Expressions can only refer to "hash" key (the unique table key) NOT "range" key (sorting key)
 
-    ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName (so "janice" for  example)
+    ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName 
+                                   (so "janice" for  example)
 
-    KeyConditionExpression ------- Specify TWO THINGS. Which column to look at, and what value we are looking for in that column. So we want to look through column SITE_NAME and bring back entries that have :site (refers back to variable siteName, ex: "janice")
-
-    ProjectionExpression --------- When the column SITE_NAME has any entries as "janice", bring back the ProjectionExpression, so everything in the "TOPICS" heading
+    KeyConditionExpression ------- Specify TWO THINGS. Which column to look at, and what value we are looking for in that column. 
+                                   So we want to look through column SITE_NAME and bring back entries that have :site 
+                                   (refers back to variable siteName, ex: "janice")
+                                   NOTE ---> Keycondition Expression ONLY WORKS FOR UNIQUE KEY FIELD
+                                   
+    ProjectionExpression --------- When the column SITE_NAME has any entries as "janice", bring back the ProjectionExpression, 
+                                   so everything in the "TOPICS" heading
 
     TableName -------------------- Which table in the DB to look through
 
