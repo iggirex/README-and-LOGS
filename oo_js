@@ -132,7 +132,7 @@ Different and Same Objects
 
     ob1 === ob2
 
-  ---> Both objects have same content, both object made by same line of code, but this equates to FALSE!
+  ---> Both objects have same content, both object made by same line of code, but a strict comparison equates to FALSE!
   ---> Even though the same exact line of code was used to create both objects, they are themselves different objects
   ---> Changes made to one object will not have any effect on the other object, identical twins in real life arent same person
 
