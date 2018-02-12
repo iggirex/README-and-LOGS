@@ -50,6 +50,7 @@ A Dynamo QUERY example that returns a promise
 --------------------------------------------------------------------------------------------
 Query uses KeyConditionExpression, can use range key here, this is where the column to look at is specified
 ---> Keycondition Expressions can only refer to "hash" key (the unique table key) NOT "range" key (sorting key)
+---> Remember the key has to be unique. Can either be a unique HASH, or if a HASH alongside a RANGE KEY are unique
 
     ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName 
                                    (so "janice" for  example)
