@@ -1,4 +1,6 @@
+--------------------------------------------------------------------------------------------
 An example dynamo SCAN inside a promise
+--------------------------------------------------------------------------------------------
 
 params are what it looks for:
     ExpressionAttributeNames ----- This just sets variables to use later on, (necessary if using reserved keywords)
@@ -95,3 +97,21 @@ function getTopics(siteName) {
     });
   });
 }
+
+--------------------------------------------------------------------------------------------
+HOW TO GET LATEST OR FIRST ITEM IN DB;
+--------------------------------------------------------------------------------------------
+
+You can get the latest item using Query(hash_key="...", ScanIndexForward=True, limit=1)
+-->But, this assumes you have a range_key_defined.
+
+With Scan, you have no such parameter as ScanIndexForward=false and anyway, you can not rely on the order as data 
+    is spread over partitions and the Scan request is then load balanced.
+
+-->To achieve you goal with DynamoDB, you may "split" your timestamp this way:
+
+hash_key: date
+range_key: time or full timestamp, as you prefer
+Then, you can use the 'trick' of:
+    
+    Query + Limit=1 +  ScanIndexForward=false
