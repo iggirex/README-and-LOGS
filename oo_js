@@ -316,13 +316,36 @@ If we add a different function and delegate instances to Car.prototype, the crea
 ----> Car.prototype.constructor ---> .constructor is almost exclusive to prototypes and points back to Constructor function
 ---> so Car.prototype.constructor is Car itself
 
+------------------------------------------------------------------------------------------------------------------------------
+PSEUDOCLASSICAL PATTERN
+------------------------------------------------------------------------------------------------------------------------------
 
+This is closely related to Prototypal Pattern, this pattern assumes you will be making lots of classes.
+The amount of code of Prototypal Pattern would get repetitive for making lots of classes
 
+This is the code that would get very repetitive:
 
+         var Car = function(loc){
+            var obj = Object.create(Car.prototype);   // ***
+            obj.loc = loc;
+            return obj;                               // ***
+        }
+        Car.prototype.move = function(){this.loc++};
 
+----> To aleviate this repetitive code JavaScript has the *NEW* keyword:
 
+      var ben = new Car(1);
+      
+----> When we use the keyword new, the constructor function (Car) will run in a special mode called *CONSTRUCTOR MODE*
+----> In this mode we can expect a lot of work to be done for us. It temporarily runs as if it had extra lines of code:
 
+         var Car = function(loc){
+            this = Object.create(Car.prototype);       // *** EXTRA LINE ADDED BY NEW
+            obj.loc = loc;
+            return this;                               // *** EXTRA LINE ADDED BY NEW
+        }
 
+Not different from Prototype Pattern at all, simply a syntatical layer over the Prototype Pattern
 
 
 
