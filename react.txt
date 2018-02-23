@@ -1,0 +1,50 @@
+REACT.JS
+
+to install CLI React app maker:
+    npm install -g create-react-app
+to create app:
+    create-react-app my-app
+to start app run command in root dir:
+        npm start
+    --> Issues running npm start try:
+        --> npm install -g npm@latest to update npm because it is sometimes buggy.
+        --> rm -rf node_modules to remove the existing modules.
+        --> npm install to re-install the project dependencies.
+
+------------------------------------------------------------------------------------------------------------
+React has different kinds of components:
+------------------------------------------------------------------------------------------------------------
+React.Component subclasses:
+    --> The component tells React what to render
+
+            class ShoppingList extends React.Component {
+                render() {
+                    return (
+                    <div className="shopping-list">
+                        <h1>Shopping List for {this.props.name}</h1>
+                        <ul>
+                        <li>Instagram</li>
+                        <li>WhatsApp</li>
+                        <li>Oculus</li>
+                        </ul>
+                    </div>
+                    );
+                }
+                }
+
+    --> here ShoppingList is a REACT COMPONENT CLASS (component type).
+    --> components take in parameters called PROPS and returns a hierarchy of views to display via render()
+
+
+    --> Most React devs use a special syntex called JSX, makes it easier to write these structures  
+
+            return React.createElement('div', {className: 'shopping-list'},
+                React.createElement('h1', /* ... h1 children ... */),
+                React.createElement('ul', /* ... ul children ... */)
+            );
+
+
+When you want to aggregate data from multiple children or to have two child 
+components communicate with each other, move the state upwards so that it lives in the parent component.
+
+If component is does not have state, it doesn't need constructor
