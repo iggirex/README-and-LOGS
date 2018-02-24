@@ -1,0 +1,66 @@
+RUBY GUIDE
+
+BASICS:
+    --> Every single thing in Ruby is an object
+
+    --> Constant variable names start with capital letter
+
+RETURNING A FILE:
+        write_handler = File.new("yourSum.out", "w")
+
+        write_handler.puts("Random Text here").to_s
+
+        write-handler.close
+
+READING A FILE:
+        data_from_file = File.read("yourSum.out")
+
+        puts "Data From File: " + data_from_file
+
+    load --> to execute code from another file
+        load "rubyOrNot.rb"
+
+COMMENTS:
+    --> #
+    --> multiline comments:
+        =begin
+        Multiline Comment
+        =end
+
+COMPARISON OPERATORS:
+    < > == <= >= && || !=
+    <=> returns 0 if both values are equal, 1 if first is greater, -1 if first is less
+
+LOGICAL OPERATORS:
+    && || ! and or not unless
+
+
+CONDITIONALS:
+    -->Very important to end with keyword "end"
+
+    if(age >= 5) && (age <=6)
+        puts "You're in Middle School"
+    elsif (age >= 7)
+        puts "You're in Middle School"
+    else
+        puts "Stay Home"
+    end
+
+CASE:
+    case greeting
+    when "Frech", "french"
+        puts "Bonjour"
+        exit
+    when "Spanish", "spanish"
+        puts "Hola"
+        exit
+    else "English"
+        puts "Hello"
+    end
+
+OTHER RUBY COMMANDS:
+    gets --> gets data from user
+    .to_i --> convert to integer
+    print --> prints to current line
+    puts --> prints to a new line
+    chomps --> gets rid of new line
