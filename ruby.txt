@@ -5,6 +5,10 @@ BASICS:
 
     --> Constant variable names start with capital letter
 
+    --> Normal variables start with lowercase or _, cannot start with number
+
+    --> use double quotes
+
 RETURNING A FILE:
         write_handler = File.new("yourSum.out", "w")
 
@@ -30,6 +34,7 @@ COMMENTS:
 COMPARISON OPERATORS:
     < > == <= >= && || !=
     <=> returns 0 if both values are equal, 1 if first is greater, -1 if first is less
+    Ternary --> x ? "yey" : "nay"       #(if x is true, return "yey", if not return "nay")
 
 LOGICAL OPERATORS:
     && || ! and or not unless
@@ -58,9 +63,466 @@ CASE:
         puts "Hello"
     end
 
+LOOPS:
+    --> have to write "loop do" to begin regular loop, breaks with break keyword
+    --> "next" tells loop to start next iteration
+    --> "break" stops loop
+    --> "end" is like a closing bracket thingy
+
+        x = 1
+        loop do
+            x += 1
+
+            next unless (x % 2) == 0
+            puts x
+
+            breaks if x >= 10
+        end
+
+    WHILE LOOP:
+
+            y = 1
+            while y <= 10
+                y += 1
+                next unless(y % 2) == 0
+                puts y
+            end
+
+    UNTIL LOOP:
+
+            a = 1
+            until a >= 10
+                a += 1
+                next unless(a % 2) == 0
+                puts a
+            end
+
+    FOR IN LOOP:
+        --> INTERPOLATION: variable names printed out with #{} like #{<var name>}
+
+        numbers = [1,2,3,4,5]
+        for number in numbers
+            puts "#{number}, "       
+        end
+
+    .EACH DO LOOP:
+        --> for arrays
+        --> use "do"
+        groceries = ["bananas", "sweet potatoes", "pasta", "tomato"]
+        groceries.each do |food|
+            puts "Get Some #{food}"
+        end
+    RANGE LOOP:
+        (0..5).each do |i|
+            puts "# #{i}"
+
+FUNCTIONS:
+    --> start with "def"
+
+    def add_nums(num_1, num_2)
+        return num_1.to_i + num_2.to_i
+    end
+
+    puts add_nums(2,4)
+
+    --> Any value that CHANGES INSIDE OF A FUNCTION is NOT going to affect an outside value
+
+    x = 1
+    def change_x(x)
+        x = 4
+    end
+
+    change_x(x)
+    puts "x =#{x}"  # x = 1
+
+EXCEPTIONS:
+    --> can use "begin" and "rescue", ending with "end"
+    --> this method catcher user/language errors
+
+        print "Enter a Number : "
+        first_num = gets.to_i
+        print "Enter another : "
+        second_num = gets.to_i
+
+        begin
+            answer = first_num / second_num
+        
+        rescue
+            puts "Yout cna't divide by zero"
+            exit
+        end
+        puts "#{first_num} / #{second_num} = #{answer}"
+
+    --> Can make custom exceptions with "raise"
+    --> looks for "ArgumentErro" which uses "unless" keyword to throw error based on conditional
+
+        age = 12
+        def check_age(age)
+            raise ArgumentError, "Enter Positive Number" unless age > 0
+        end
+        begin
+            check_age(-1)
+        rescue ArgumentError
+            puts "That is an impossible age"
+        end
+
+STRINGS:
+    --> interpolation only works with double quotes
+    --> barely ever use single quotes with strings
+
+        puts "Add Them #{4 + 5} \n\n"      # Add Them 9
+        puts 'Add Them #{4 + 5} \n\n'      # Add Them #{4 + 5} \n\n
+
+    --> Multi line string uses "EOM"
+        
+        multiline_string = <<EOM
+        This is a very long string
+        that contains interpolation
+        like #{4 + 5} \n\n
+        EOM
+
+
+        first_name = "Dereck"
+        last_name = "Banas"
+        full_name = first_name + last_name
+        middle_name = "Justin"
+        full_name = "#{first_name} #{middle_name} #{last_name}"
+        
+        puts full_name.include?("Justin")
+
+        puts full_name.size
+
+        puts "Vowels : " + full_name.count("aeiou")
+
+PUTTING VARIABLES IN STRINGS:
+
+    --> Use %s for strings %d for integers and %f for floats. EX:
+        printf "%s goes %s, max.name, max.bark" // Max goes Loud Bark
+
+MODULES:
+
+    --> made up of methods and instance variables like classes BUT CANT BE INSTANTIATED
+    --> can INHERIT MULTIPLE MODULES, unlike classes you CAN ONLY INHERIT ONE CLASS
+    --> use module keyword
+    --> remember attr_accessor set up both getters and setters
+    --> uses "self" like other languages use 'this'
+
+    --> SAVE IN ITS OWN FILE: human.rb
+            module Human
+                    attr_accessor :name, :height, :weight
+
+                def run
+                    puts self.name + " runs"
+                end
+            end
+    ---------------------------------------->
+    --> another file called smart.rb
+            module Smart
+                def act_smart
+                    return "E=mc2"
+                end
+            end
+    ---------------------------------------->
+            
+            ---> use require to bring in other module files
+            ---> use "include" inside a class to inherit from module
+            ---> use prepend in case BOTH MODULE AND CLASS HAVE SAME FUNCTION (MODULE WILL SUPERCEDE)
+    require_relative "human"
+    require_relative "smart"
+
+    module Animal
+        def make_sound
+            puts "Grrr"
+        end
+    end
+
+    class Dog
+        include Animal
+    end
+    rover = Dog.new
+    rover.make_sound
+
+    class Scientist
+        include Human
+        prepend Smart
+        def act_smart
+            return "BUBUcaca"
+        end
+    end
+
+    einstein = Scientist.new
+
+    einstein.name = "Albert"
+    puts einstein.name
+    einstein.run
+    puts einstein.name + "says " + einsteing.act_smart     # Albert says E = mc2 
+        ---> BY USING PREPEND EINSTEIN INHERITS FROM MODULE AND OVERRIDES ASSIGNMENT IN CLASS
+
+POLYMORPHISM AND DUCK TYPING:
+
+    Polymorphism --> A different way to think
+
+    ---> A way to grab objects by a common class 
+    ----> THIS CODE IS MORE JAVA-ISH !!!!
+    EX: you have
+    class Animal
+    Dog extends Animal
+    Cat extends Animal
+
+    Animal[] Kingdom = new Animal[1000]   ---> an array of only animals, how get dogs and cats in????
+                                          ---> THANKS TO POLYMORPHISM we can declare animals as ANIMAL CLASS
+    instead of:     Dog rover = new Dog();
+    delcared animal" Animal spot = new Dog();
+    SO WE CAN COLLECT ALL THESE DIFFERENT CLASSES IN ONE ARRAY
+        Kingdom[0] = new Dog
+        Kingdom[1] = new Cat
+    
+        ---> WHEN THESE DIFFERENT THINGS IN ONE TYPE ARRAY GET CALLED THEY BEHAVE LIKE THEIR OBJECT
+        ----> DOG WILL SLEEP LIKE A DOG, CAT WILL SLEEP LIKE A CAT
+
+SYMBOLS:
+        ---> basically strings that cannot be changed
+        ---> normally used to conserve memory or speed string comparison
+        ---> commonly used as keys for hashes
+
+            :derek
+
+            puts :derek
+            puts :derek.to_s         #derek
+            puts :derek.class        #Symbol
+            puts :derek.object_id    #833628
+
+        ---> Setters and Getters use symbols EX:
+
+            attr_accessor :name, :weight
+ARRAYS:
+        ----> several ways to make
+        1)
+            array_1 = Array.new
+        2)
+            array_2 = Array.new(5)    ----> creating an array with 5 spaces, will DEFAULT TO NULL
+            array_3 = Array.new(5, "empty")   -----> five spaces in array, DEFAULT WILL BE "empty"
+            array_4 = [1, "two", 3, 5.5]    -----> can PUT ANY TYPE IN ARRAY (why is polymorphism good in ruby then??)
+
+    ---> to return:
+        array_4[2]       # 3
+        array_4[2, 3]    # returns two values, starting at index 3
+        array_4[2, 3].join(",")
+        array_4values_at(0, 13).join(",")   # joins specified values
+
+        arrray.unshift(0)  # adds value to beginning of array
+        arrray.unshift(0)  # removes first value
+        array.push(100, 200) # adds value(s) to end of array
+        array.pop() remove last item
+        array.concat([10, 20, 30]) will add array to end of array
+        array_4.size
+        array_4.include?
+        array_4.count(100)
+        array_4.empty?
+        p array_4  # prints out whole array
+
+        array_4.each do |value|
+            puts value
+        end
+
+HASHES:
+        ---> collection of key value pairs
+
+        number_hash = { "PI" => 3.14,
+                        "Golden => 1.687"
+                        "e" => 2.476}
+        puts number_hash["PI"]  # 3.14
+
+        superheroes = Hash["Clark Kent", "Superman",
+                            "Bruce Wayne",
+                            "Batman"]
+        puts superheroes["Clark Kent"]   # Superman
+        ---> add new key value:
+        superheroes["Barrya Allen"] = "Flash"
+        ---> add default in case not exist
+        samp_hash = Hash.new("no Such Key")
+        
+        superheroes.update = Hash.update(superheroines)   #destructive merge
+        superheroes.merge = Hash.update(superheroines)   # keeps all keys and values even duplicates
+
+        ---> GET KEYS VALUES
+        superheroes.each do |key, value|
+            puts key.to_s + " : " + value
+        end
+
+        superheroes.has_key?("Lisa watevs")
+        superheroes.has_value?("Lisa watevs")
+        superheroes.empty?
+        superheroes.size.to_s?
+
+        ---> deleting 
+        superheroes.delete("Barry allen")   # pass key
+
+ENUMERABLES
+        ---> A class that includes enumerable module will gain collection capabilities
+        ---> declare "include Enumerable"
+        ---> MUST INCLUDE FUNCTION CALLED EACH !
+        class Menu
+            include Enumerable
+            def each
+                yield "pizza"
+                yield "spahget"
+                yeild "salad"
+                yield "bred"
+            end
+        end
+
+        menu_options = Menu.new
+
+        menu_options.each do |item|
+            puts 'would you like : #{item}'
+        end
+
+        p menu_options.find{|item| item = "pizza"}
+        p menu_options.select{|item| item.size <= 5}
+        p menu_options.find{|item| item.size <= 5}
+        p menu_options.first
+        p menu_options.min
+        p menu_options.sort
+        p menu_options.max
+
+FILE OBJECT
+        Ffile = File.new("authos.out", "w")   # w is write
+        file.puts "will"   # adds to file
+        file.close  #m must clost file
+
+        puts File.read("authos.out")   # to read file
+
+
+        
+
+
+
+
+
+
+
+    ---> static languages use "duck typing" to achieve a version of polymorphism
+    ---> Ruby pays less attention to class types then to methods that can be called from an object
+
+        class Bird
+            def tweet(bird_type)   ---> we'll call specific version of tweet from object being made
+            bird_type.tweet
+        end
+        
+        class Cardinal < Bird
+            def tweet
+                puts "Tweet Tweet"
+            end
+        end
+
+        class Parrot < Bird
+            def tweet
+                puts "Squawk"
+            end
+        end
+
+        generic_bird = Bird.new
+        generic_bird.tweet(Cardinal.new)
+        generic_bird.tweet(Parrot.new)
+    
+
+OBJECTS:
+        --> 
+
+        class Animal
+                def initialize  ---> runs everytime Animal is created, 
+                    puts "Creating new Animals"
+                end
+                def set_name(new_name)
+                    @name = new_name     ---> @ symbol is for setting variables
+                end
+
+                def get_name
+                    @name
+                end
+
+                def name
+                    @name
+                end
+
+                def name=(new_name)
+                    if new_name.is_a?(Numeric)
+                        puts "Name can't be a number"
+                    else
+                        @name = new_name
+                    end
+                end
+        end
+
+        cat = Animal.new
+        cat.set_name("Peekeey")
+
+        puts cat.get_name
+
+        cat.name = "Sophie"
+
+    GETTERS AND SETTERS:
+        --> this is the long way to do it using "attr_reader" for getter and "attr_writer" for setter:
+
+            class Dog
+                attr_reader :name, :height, :weight
+                attr_writer :name, :height, :weight
+
+        --> This is the shorthand way of doing this using "attr_accessor":
+
+            class Dog
+                attr_accessor :name, :height, :weight
+
+                def bark
+                    return "generic bark"
+                end
+            end
+
+            rover = Dog.new
+            rover.nome = "Rover"
+            puts rover.name
+
+    INHERITING FROM OTHER OBJECTS:
+        --> use carrot symbol inside class to inherit
+            class GermanShepard < Dog
+                def bark
+                    return "Loud bark"
+                end
+            end
+
+
+
+
 OTHER RUBY COMMANDS:
     gets --> gets data from user
     .to_i --> convert to integer
     print --> prints to current line
     puts --> prints to a new line
-    chomps --> gets rid of new line
+    .include? --> regex; takes string returns boolean if characters are present EX:
+        full_name.count("aeiou")     --> returns count of vowels
+    ^ --> mean not in .include? EX: 
+        full_name.count("^aeiou")    --> returns count of consonants
+    .start_with? --> regex; returns boolean
+    .index()  --> returns index
+    .equal? --> EX:   puts "\"a\".equal?(\"a\") : " + ("a".equal?"a").to_s   ---> true
+    .upcase
+    .downcase
+    .swapcase
+    .lstrip   --> deletes all left white space
+    .rstrip   --> deletes all right white space
+    .strip    --> deletes all white space
+    .rjust(number, '.')  --> number is amount of space allowed, any aditional spaces to right will be replaced by dots
+    .rjust(number, '.')  --> number is amount of space allowed, any aditional spaces to left will be replaced by dots
+    .center(number, '.')  --> number is amount of space allowed, any aditional spaces around will be replaced by dots
+    .chop --> cuts last character
+    .chomp --> gets rid of new line, could use arguments of what letters to get rid of at end
+    .delete() --> deletes every occurrence of characters passed in
+    .split()  --> creates array from string, 
+        specify where to seperate in argument (//) --> every char (/ /) --> every space
+    to_i  --> convert to int
+    to_f  --> float
+    to_sym --> convert to symbol
+    .join("")   ---> joins types together into concatenated string  EX: array[2, 2].join(",")
+
+
