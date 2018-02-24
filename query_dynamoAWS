@@ -1,4 +1,6 @@
+--------------------------------------------------------------------------------------------
 An example dynamo SCAN inside a promise
+--------------------------------------------------------------------------------------------
 
 params are what it looks for:
     ExpressionAttributeNames ----- This just sets variables to use later on, (necessary if using reserved keywords)
@@ -49,12 +51,19 @@ function getItems(siteName){
 A Dynamo QUERY example that returns a promise
 --------------------------------------------------------------------------------------------
 Query uses KeyConditionExpression, can use range key here, this is where the column to look at is specified
+---> Keycondition Expressions can only refer to "hash" key (the unique table key) NOT "range" key (sorting key)
+---> Remember the key has to be unique. Can either be a unique HASH, or if a HASH alongside a RANGE KEY are unique
 
-    ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName (so "janice" for  example)
+    ExpressionAttributeValues ---- here we are using varialbe siteNames. Setting variable :site to equal siteName 
+                                   (so "janice" for  example)
 
-    KeyConditionExpression ------- Specify TWO THINGS. Which column to look at, and what value we are looking for in that column. So we want to look through column SITE_NAME and bring back entries that have :site (refers back to variable siteName, ex: "janice")
-
-    ProjectionExpression --------- When the column SITE_NAME has any entries as "janice", bring back the ProjectionExpression, so everything in the "TOPICS" heading
+    KeyConditionExpression ------- Specify TWO THINGS. Which column to look at, and what value we are looking for in that column. 
+                                   So we want to look through column SITE_NAME and bring back entries that have :site 
+                                   (refers back to variable siteName, ex: "janice")
+                                   NOTE ---> Keycondition Expression ONLY WORKS FOR UNIQUE KEY FIELD
+                                   
+    ProjectionExpression --------- When the column SITE_NAME has any entries as "janice", bring back the ProjectionExpression, 
+                                   so everything in the "TOPICS" heading
 
     TableName -------------------- Which table in the DB to look through
 
@@ -88,3 +97,21 @@ function getTopics(siteName) {
     });
   });
 }
+
+--------------------------------------------------------------------------------------------
+HOW TO GET LATEST OR FIRST ITEM IN DB;
+--------------------------------------------------------------------------------------------
+
+You can get the latest item using Query(hash_key="...", ScanIndexForward=True, limit=1)
+-->But, this assumes you have a range_key_defined.
+
+With Scan, you have no such parameter as ScanIndexForward=false and anyway, you can not rely on the order as data 
+    is spread over partitions and the Scan request is then load balanced.
+
+-->To achieve you goal with DynamoDB, you may "split" your timestamp this way:
+
+hash_key: date
+range_key: time or full timestamp, as you prefer
+Then, you can use the 'trick' of:
+    
+    Query + Limit=1 +  ScanIndexForward=false

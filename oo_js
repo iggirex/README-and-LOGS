@@ -1,0 +1,374 @@
+------------------------------------------------------------------------------------------------------------------------------
+SCOPE
+------------------------------------------------------------------------------------------------------------------------------
+
+GLOBAL SCOPE -- Every scope is within global scope. If there are no other scopes, then this is the only scope.
+
+LEXICAL SCOPE -- happens everytime a function is made. spans from "f" to closing curly bracket. 
+                 variables declared in a lexical scope cannot be accessed from out of the scope, will throw error.
+                 Other code blocks made by curly braces (loops, conditionals) do not create scopes.
+                 
+EXECUTION CONTEXT -- (or In-Memory Scopes) differ from Lexical Scopes. They are built as the code is run (not written out) 
+                  -- this rules what variables are available to what scopes at run time
+                  -- for each Lexical Scope, there might be many In-Memory Scopes depending on how many times function is run
+                  -- Stores key value pairs and their contexts (scopes)
+                  
+THIS --keyword that gets value bound to it,like variable except it gets bound to the correct object according to binding rules
+     -- "this" is bound at call time to the object that calls "this"'s function. So "this" must be part of an object's method.
+     -- Example obj.fn(3, 4)
+     -- "this" keyword is always bound to the object LEFT OF THE DOT at call time. so "obj" is bound to "this".
+------------------------------------------------------------------------------------------------------------------------------
+PROTOTYPE CHAIN 
+------------------------------------------------------------------------------------------------------------------------------
+          -- Mechanism of creating objects that resemble other objects.
+          -- Can free up memory space, avoid code duplication
+          -- Makes an object behave as if it had all the properties of another object
+          -- Does this by delegating all failed lookups to the other object.
+        ---> EX
+        var myArr = []
+        myArr.push("hey");
+
+        // myArr never had a "push" method added to it, so it looks up the prototype chain to Array.prototype.push
+        // so the failed "push" method was passed up its prototype chain and found the method in this other object.
+        
+THE OBJECT PROTOTYPE -- The uppermost object to which all javascript objects end up pointing to
+                     -- All failed lookups for javascript objects will eventually delegate up to the object prototype
+                     -- Where all basic methods are provided to all objects
+                     -- "this" keyword will point to the left of the dot, to the object that called it
+                        (even if the delegation went up the chain)
+                     -- this allows these objects to share the method and have "this" work correctly
+    --->EX
+    var obj = {}
+    obj.toString();
+    
+    // toString() will fail lookup in obj because it's empty, so then it gets delegated up from obj to the object prototype
+
+------------------------------------------------------------------------------------------------------------------------------
+DIFFERENT WAYS TO CREATE OBJECTS IN JS
+------------------------------------------------------------------------------------------------------------------------------
+
+    ---> Extending an object will create multiple objects and their methods,all holding a places in memory.
+    ---> Object.create() creates a pointer to one place in memory. So the new object points to the original object.
+    ---> Any change to the original object will be an immediate change on the Object.created object.
+
+        var gold = {a: 1};
+
+        var blue = extend({}, gold);
+        blue.b = 2
+
+        var rose = Object.create(gold)
+        rose.b = 2
+        gold.z = 3
+
+        console.log(blue.z) // error, z not defined
+        console.log(rose.z) // 3
+
+------------------------------------------------------------------------------------------------------------------------------
+OBJECT DECORATOR PATTERN
+------------------------------------------------------------------------------------------------------------------------------
+    ---> This is a way to increase code reusability and cut down on duplicate code
+    ---> By creating functions that interact with objects that have similar needs, code can get better.
+    ---> This example is making different cars for a game:
+        
+        var amy = {location: 1};
+        amy.loc++;
+        var ben = {location: 9};
+        ben.loc++;
+        
+        --->Refactored to:
+        
+            var move = function(car){
+                car.loc++;
+            }
+            var amy = {location: 1};
+            move(amy);
+            var ben = {location: 9};
+            move(ben);
+            
+        ---> Refactored even more to:
+            
+            var carlike = function(obj, loc){
+                obj.loc = loc;
+                return obj;
+            }
+            var move = function(car){
+                car.loc++;
+            }
+            var amy = carlike({}, 1);
+            move(amy);
+            var ben = carlike({}, 9);
+            move(ben);
+                
+            //NOTE: (it's common to use ADJECTIVES for object decorator functions, hence 'carlike')
+            
+        ---> Refactored to include the "move" function as an obj property:
+        
+             var carlike = function(obj, loc){
+                obj.loc = loc;
+                obj.move = move;
+                return obj;
+            }
+            var move = function(){
+                this.loc++;
+            }
+            // "this" will refer to the obj to the left of the dot when move is called, so in ben.move(), 'this' is ben
+
+            var amy = carlike({}, 1);
+            amy.move();
+            var ben = carlike({}, 9);
+            ben.move();
+
+        ---> Thinking about the IN MEMORY scope, there is ONLY ONE move function, which is pointed to by all the cars
+        ---> As opposed to including the move function in carlike, which creates a a seperate move function for each car.
+        ---> EX:
+        
+            var carlike = function(obj, loc){
+                obj.loc = loc;
+                obj.move = function(){ obj.loc++ }
+                return obj;
+            }
+            // This is EXPENSIVE, creating lots of identical functions for each object produced
+
+------------------------------------------------------------------------------------------------------------------------------
+DIFFERENT AND SAME OBJECTS
+------------------------------------------------------------------------------------------------------------------------------
+
+    var makeObj = function(){
+        return {property: "example"};
+    }
+    var ob1 = makeObj();
+    var ob2 = makeObj();
+
+  ---> How will this be computed with the strict comparison operator??
+
+    ob1 === ob2
+
+  ---> Both objects have same content, both object made by same line of code, but a strict comparison equates to FALSE!
+  ---> Even though the same exact line of code was used to create both objects, they are themselves different objects
+  ---> Changes made to one object will not have any effect on the other object, identical twins in real life arent same person
+
+------------------------------------------------------------------------------------------------------------------------------
+CLASSES VS OBJECT DECORATORS
+------------------------------------------------------------------------------------------------------------------------------
+
+  ---> With the decorator pattern we passed an object into the object decorator function
+  ---> Instead we can just ask the function to give us an object back
+  ---> ONLY DIFFERENCE is that a CLASS will build the object it will augment // decorator will accept the object it augments
+  ---> Give classes different sort of name, instead of an ADJECTIVE, give a CAPITALIZED NOUN
+  EX:
+  
+      var Car = function(loc){
+      var obj = {loc: loc};
+      obj.move = function(){ obj.loc++; };
+          return obj;
+      }
+      // These functions are called CONSTRUCTOR FUNCTIONS, they build the objects that qualify as members of the CLASS
+      //  The class is the notion of a category of things and all entailed code that supports that category
+      // CONSTRUCTOR is the function used to produce new instance of a class
+      // Objects returned by CONTRUCTOR are called INSTANCES OF THEIR CLASS
+      // INSTANTIATION calling the constructor to build a new INSTANCE
+
+------------------------------------------------------------------------------------------------------------------------------
+FUNCTIONAL CLASS PATTERN WITH SHARED METHODS (FUNCTIONAL SHARED PATTERN)
+------------------------------------------------------------------------------------------------------------------------------
+
+    ---> To prevent the same exact function (move) to be created with every class instance, all instances can share one func
+
+            var Car = function(loc){
+                var obj = {loc: loc);
+                obj.move = move;
+                return obj;
+            }
+            var move = function(){
+                this.loc++;
+            }
+            
+    ---> move is still being used twice, in the constructor and then again in the function
+    ---> this can be problematic when lots of functions will be shared, lots of duplicate code
+    ---> We can put all these shared functions in one object, then pass those functions to the instance being created
+    
+    
+            var Car = function(loc){
+                var obj = {loc: loc);
+                extend(obj, methods);
+                return obj;
+            }
+            var methods = {
+                move: function(){
+                    this.loc++;
+                },
+                on: function(){},
+                off: function(){}
+            }
+            //Here we can write out all the shared functions in one object and add them to the class in a SINGLE LINE
+            // EXTEND IS NOT A NATIVE JS FUNCTION (available in many libraries)
+            
+    --> Issue with above code is that it's not clear that 'methods' is bundled up with the Car class
+    --> Here we can tie in methods to the class that it belongs to:
+
+            var Car = function(loc){
+                var obj = {loc: loc);
+                extend(obj, Car.methods);
+                return obj;
+            }
+            Car.methods = {
+                move: function(){
+                    this.loc++;
+                },
+                on: function(){},
+                off: function(){}
+            }
+            // This is TRICKY POINT, people forget that FUNCTIONS ARE JUST OBJECTS
+            // Can have properties added to them JUST LIKE ANY OBJECT
+            // No relationship between what you get when a function is invoked and the properties stored into the func object
+            // EASY TO THINK that because we add properties to a function, some kind of MAGIC is going to happen
+            // There is NO MAGIC, just simple property access
+
+------------------------------------------------------------------------------------------------------------------------------
+PROTOYTPE PATTERN
+------------------------------------------------------------------------------------------------------------------------------
+
+When you build an object literal, you DO NOT GET TO SET ITS PROTOTYPE. EX:
+
+        var Car = function(loc){
+            var obj = {loc: loc);      //declaring object literal right here
+            extend(obj, Car.methods);
+            return obj;
+        }
+        Car.methods = {
+            move: function(){
+                this.loc++;
+            },
+            on: function(){},
+            off: function(){}
+        }
+
+--> In order to be able to set an object's prototype you HAVE TO USE OBJECT.CREATE() !! EX:
+
+        var Car = function(loc){
+            var obj = Object.create(Car.methods);   // Using Object.create to set prototypal inheritance to Car.methods
+            obj.loc = loc;
+            return obj;
+        }
+        Car.methods = {
+            move: function(){
+                this.loc++;
+            },
+            on: function(){},
+            off: function(){}
+        }
+        // Any failed lookup on obj will now be delagated up to Car.methods
+        
+--> Steps for making a class in the Prototypal Pattern are:
+    1) A function that allows you to make new instances
+    2) A line in that function that creates new instances (using Object.create())
+    3) A delegation from the new object up to a prototype (the argument that goes into Object.create( <delegate_to_this> ))
+    
+THIS IS SO COMMON A SHORTHAND HAS BEEN CREATED:
+--> adding methods to a constructor EX: Car.methods = {...}
+--> We'll have to do this A WHOLE LOT if plan on using Prototypal Pattern. Steps 1 and 2, making constructor, then adding methods to it
+--> So the language DOES THIS AUTOMATICALLY FOR YOU
+
+------> Whenever a function is created, it will have an object attached to it that is a CONTAINER FOR METHODS 
+------> Just in case you plan to use that function to build instances of a class
+
+THIS OBJECT IS NOT: Car.methods
+
+IT IS: Car.prototype
+--> So adding a new method to this object is simple:
+        
+        Car.prototype.move = {this.loc++};
+        
+ EX:
+         var Car = function(loc){
+            var obj = Object.create(Car.prototype);   // Pointing delegation of created object to Car.prototype
+            obj.loc = loc;
+            return obj;
+        }
+        Car.prototype.move = function(){
+                                 this.loc++
+                              };
+
+        
+ THERE IS NOTHING SPECIAL OR INTERESTING ABOUT THE PROTOTYPE KEYWORD. PEOPLE GET CONFUSED AND EXPECT SPECIAL BEHAVIOR
+ ALL IT DOES IS ACT AS CAR.METHODS, THAT'S IT
+ 
+ --> The Car function does NOT delegate its failed lookups to Car.prototype, just like Car.methods
+ --> Instances of this class have been told to delegate to Car.methods OR Car.prototype, and they'll delegate their failed lookups
+
+If we add a different function and delegate instances to Car.prototype, the created objects will behave the same
+
+ EX:
+         var Car = function(loc){
+            var obj = Object.create(Car.prototype);   // Pointing delegation of created object to Car.prototype
+            obj.loc = loc;
+            return obj;
+        }
+        Car.prototype.move = function(){
+                                 this.loc++
+                              };
+         var Example = function(){
+            return Object.create(Car.prototype);
+        }
+
+----> Object from Example function will be same as Car function, we are still telling them to delegate to Car.prototype
+
+----> Car.prototype.constructor ---> .constructor is almost exclusive to prototypes and points back to Constructor function
+---> so Car.prototype.constructor is Car itself
+
+------------------------------------------------------------------------------------------------------------------------------
+PSEUDOCLASSICAL PATTERN
+------------------------------------------------------------------------------------------------------------------------------
+
+This is closely related to Prototypal Pattern, this pattern assumes you will be making lots of classes.
+The amount of code of Prototypal Pattern would get repetitive for making lots of classes
+
+This is the code that would get very repetitive:
+
+         var Car = function(loc){
+            var obj = Object.create(Car.prototype);   // ***
+            obj.loc = loc;
+            return obj;                               // ***
+        }
+        Car.prototype.move = function(){this.loc++};
+
+----> To aleviate this repetitive code JavaScript has the *NEW* keyword:
+
+      var ben = new Car(1);
+      
+----> When we use the keyword new, the constructor function (Car) will run in a special mode called *CONSTRUCTOR MODE*
+----> In this mode we can expect a lot of work to be done for us. It temporarily runs as if it had extra lines of code:
+
+         var Car = function(loc){
+            this = Object.create(Car.prototype);       // *** EXTRA LINE ADDED BY NEW
+            obj.loc = loc;
+            return this;                               // *** EXTRA LINE ADDED BY NEW
+        }
+
+Not different from Prototype Pattern at all, simply a syntatical layer over the Prototype Pattern
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

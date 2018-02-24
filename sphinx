@@ -1,0 +1,104 @@
+GENERAL GUIDE FOR WRITING & MAINTAINING SPHINX DOCS
+
+1)  to start Sphinx project, download Sphinx into root directory of project, then from command line enter command:
+   "sphinx-quickstart".
+
+2)  quickstart will ask you a bunch of questions (which can all be changed later inside conf.py), the important questions are
+   "Do you want a Make file?" yes-- this is what builds our html
+   "master file = index.rst?" yes-- the master file will include references to all the different pages of the document.
+
+3)  quickstart creates our basic folder structure: "conf.py"-- to configure our project settings. "Makefile"-- no need to mess with this.
+   "_templates"-- where custom HTML goes. _static-- where custom CSS goes. And index.rst-- the "table of contents" part of the project.
+
+4)  each Sphinx "page" of documentation is its own .rst file, and should be placed in root dir alongside index.rst.
+
+5)  to link all these seperate .rst files into one Sphinx project, open index.rst and add names of other pages (omitting file extension) here:
+   .. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   ADD NAMES OF FILES HERE ex:
+   Developer Environment
+   Website
+
+**  this is a basic setup for a Sphinx project. Specific Sphinx formatting information can be found at http://www.sphinx-doc.org/en/stable/contents.html
+-----------------------------------------------------------------------------------------------------------------------------------------
+TO ADD CUSTOM CSS TO SPHINX:
+
+-  There's actually a few ways to do this, the easiest we've found and what is implemented in ZL IPR docs is the following:
+
+1)create your custom CSS file to be added to the project, put it insind _static dir.
+** This will allow you to override CSS rule sets inherited from chosen HTML theme and create new rule sets.
+** To view existing CSS rule sets inherited from chosen theme: build the project, then inside root/_build/html/_static you will find the CSS file being used,
+   it will be named after the HTML theme. ex: "bizstyle.css". Another option is to see it right in the browser with inspector tool.
+
+2)add the following to your conf.py:
+
+   def setup(app):
+       app.add_stylesheet('name of CSS file')  # may also be an URL, or PATH to file if file is not inside "_static" dir.
+
+-  Make sure it's in "_static" under root dir, not in "_static" under "_build" dir.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+ADD HTML TO SPHINX:
+
+-  NOTE: Sphinx files are built with Jinja templating engine, raw HTML will not work.
+
+Inside _templates dir add layout.html, below is an example of what that can look like:
+
+{% extends "!layout.html" %}
+{% block rootrellink %}
+    <li><a href="http://project.invalid/">Project Homepage</a> &raquo;</li>
+{% endblock %}
+
+
+-  NOTE: By prefixing the name of the overridden template with an exclamation mark, Sphinx will load the layout template from the underlying HTML theme.
+-  NOTE: Another way to add custom CSS files would be to add linktags to the HTML this way.
+-  NOTE: You can't just add any HTML you want, the HTML you are able to add has been pre-determined, and is added in "blocks". Possible additions can be seen below.
+
+---------------------------------------------------------------------------------------------------------------
+
+BELOW IS A LIST OF "BLOCKS" (POSSIBLE HTML ADDITIONS) TO HTML. http://www.sphinx-doc.org/en/stable/templating.html
+
+Blocks
+The following blocks exist in the layout.html template:
+
+doctype
+The doctype of the output format. By default this is XHTML 1.0 Transitional as this is the closest to what Sphinx and Docutils generate and 
+it’s a good idea not to change it unless you want to switch to HTML 5 or a different but compatible XHTML doctype.
+
+linktags
+This block adds a couple of <link> tags to the head section of the template.
+
+extrahead
+This block is empty by default and can be used to add extra contents into the <head> tag of the generated HTML file. 
+This is the right place to add references to JavaScript or extra CSS files.
+
+relbar1 / relbar2
+This block contains the relation bar, the list of related links (the parent documents on the left, and the links to index, modules etc. on the right). 
+relbar1 appears before the document, relbar2 after the document. By default, both blocks are filled; 
+to show the relbar only before the document, you would override relbar2 like this:
+{% block relbar2 %}{% endblock %}
+
+rootrellink / relbaritems
+Inside the relbar there are three sections: The rootrellink, the links from the documentation and the custom relbaritems. 
+The rootrellink is a block that by default contains a list item pointing to the master document by default, the relbaritems is an empty block. 
+If you override them to add extra links into the bar make sure that they are list items and end with the reldelim1.
+document
+The contents of the document itself. It contains the block “body” where the individual content is put by subtemplates like page.html.
+
+sidebar1 / sidebar2
+A possible location for a sidebar. sidebar1 appears before the document and is empty by default, sidebar2 after the document and contains the default sidebar. 
+If you want to swap the sidebar location override this and call the sidebar helper:
+{% block sidebar1 %}{{ sidebar() }}{% endblock %}
+{% block sidebar2 %}{% endblock %}
+(The sidebar2 location for the sidebar is needed by the sphinxdoc.CSS stylesheet, for example.)
+
+sidebarlogo
+The logo location within the sidebar. Override this if you want to place some content at the top of the sidebar.
+
+footer
+The block for the footer div. If you want a custom footer or markup before or after it, override this one.
+The following four blocks are only used for pages that do not have assigned a list of custom sidebars in the html_sidebars config value. 
+Their use is deprecated in favor of separate sidebar templates, which can be included via html_sidebars.
