@@ -179,7 +179,69 @@ CLASSES
             export default SearchBar;
     
     index.js: stays exactly the same
+===============================================================================
 
+EVENT HANDLER
+
+        search_bar.js:
+            import React, { Component} from 'react';
+
+            class SearchBar extends Component {
+                render() {
+                    return <input onChange={this.onInputChange} />;
+                    // to handle vanilla JS events, write on<name of event>={event handler}
+                    // JSX as JS variables needs to be wrapped in curly braces
+                    // onChange is a "property" or "prop" of the input element
+                }
+                //define another method as an event handler
+                onInputChange(event) { //generally called 'handle' or 'on'
+                    // all browser events pass down an "event" object
+                    console.log(event.target.value)
+                }
+            }
+
+            // above code can be shortened to:
+            // return <input onChange={(event) => console.log(event.target.value)} />;
+            export default SearchBar;
+===============================================================================
 
 STATE
+--> state is a plain JS object used to record and react to user events
+--each class based component has its own state object
+---> whenever a component state is changed, the component re-renders and forces
+all its children to re-render
 
+        search_bar.js:
+            import React, { Component} from 'react';
+
+            class SearchBar extends Component {
+                // ALL JS CLASSES have a special method called constructor
+                // constructor function is first and only function called AUTOMATICALY whenever
+                // a new instance of class is created
+                // constructor does SETUP and INITIALIZES STATE
+                constructor(props){
+                    // "super" is how we access method of parent class Component
+                    super(props);
+
+                    // EACH INSTANCE OF SEARCHBAR CLASS WILL HAVE ITS OWN STATE
+                    // this is only place where we'll use this.state =
+                    // EVERYWHERE ELSE to change state we'll use "this.setState()"
+                    this.state = { term: "" };
+                }
+
+                render() {
+                    // setState takes an object that will be the new state
+                    return(
+                        <div>
+                            <input onChange={(event) => this.setState({ term: event.target.value })} />
+                            Value of input: {this.state.term}
+                        </div>
+                    );
+                    //using this.state.term to REFERENCE, not change state
+                    // whenever setState is called, componene is re-rendered, so updates this into DOM
+                }
+            }
+            export default SearchBar;
+
+
+===============================================================================
