@@ -61,6 +61,7 @@ React code is writing multiple different components
 nested together in diff fashions to make really complex apps really simple
 
 COMPONENT - A collection of JS functions that produce HTML
+        --> ALWAYS MAKE ONE COMPONENT PER FILE
 
 BUNDLE.JS ---> Compiled Javascript, the entirety of a Reach application
                 Compiled to JS that the browser can understand
@@ -69,7 +70,7 @@ Webpack + Babel grab all JS files in a project,
 put them into a single file and makes them available as undle.js
 
 
-SIMPLEST RENDER TO PAGE ===============================================
+SIMPLEST RENDER TO PAGE INDEX.JS ===============================================
 
 //Core React functionality in React Library
 import React from 'react';
@@ -110,3 +111,45 @@ const container = document.getElementsByClassName('container')
 ReactDOM.render(<App />, container[0]);
 ReactDOM.render(<App />, document.querySelector('.container'));
 ===============================================================================
+
+EXPORTING MODULES
+
+    search_bar.js:
+            //We aren't directly calling React here, but remember
+            //JSX turns our html-looky stuff to React.createElement(blabla) !!!
+            import React from 'react';
+
+            const SearchBar = () => {
+                return <input />; // no need to close input, nothing in it
+            }
+
+            // how to give access to SearchBar from other files !!!
+            export default SearchBar;
+
+    index.js:
+            //we don't specify PATH for libraries, they can't have dupe names
+            import React from 'react';
+            import ReactDOM from 'react-dom';
+
+            //this is how we IMPORT COMPONENTS
+            import SearchBar from './components/search_bar';
+            //for FILES WE CREATE we have to include PATH, there could be many diff search_bar.js's
+
+            const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+            const App = () => {
+                // return parens are optional
+                return (
+                    <div>
+                        <SearchBar />
+                    </div>
+                );
+            }
+    
+
+ReactDOM.render(<App />, document.querySelector('.container'));
+
+CLASSES
+
+STATE
+
