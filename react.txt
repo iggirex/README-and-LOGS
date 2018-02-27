@@ -48,3 +48,15 @@ When you want to aggregate data from multiple children or to have two child
 components communicate with each other, move the state upwards so that it lives in the parent component.
 
 If component is does not have state, it doesn't need constructor
+
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+BUNDLE.JS ---> Compiled Javascript, the entirety of a Reach application
+                Compiled to JS that the browser can understand
+
+Webpack + Babel grab all JS files in a project, 
+put them into a single file and makes them available as undle.js
