@@ -436,5 +436,259 @@ export default Videolist;
 
             export default VideoListItem;
 ===============================================================================
+PROVIDING KEYS FOR COMPONENTS
 
+---> good practice to ALWAYS ADD KEY 
+
+            import React from 'react';
+            import VideoListItem from './video_list_item';
+
+            const Videolist = (props) => {
+
+                const videoItems = props.videos.map((video) => {
+                    // here we add the key as unique identifier (see comments below)
+                    return <VideoListItem key={video.etag} video={video} />
+                });
+
+                const videos = props.video;
+                // ERROR --  Each child in an array or iterator should have a unique "key" prop
+                // React has logic built in for logic for rendering lists BUT NEEDS UNIQUE HANDLERS
+                // SO IT KNOWS WHICH ITEMS IN LIST TO UPDATE --- use id's so React knows which components to update
+                // COMMON STRATEGY -- use id for each piece of data
+                // each video has an 'etag' which is unique identifier
+                return (
+                    <ul className="col-md-4 list-group">
+                        {videoItems}
+                    </ul>
+                );
+            };
+
+            export default Videolist;
+===============================================================================
+
+BUILDING UP LIST ITEMS, USING PROPS
+
+        video_list_item:
+
+            import React from 'react';
+
+            // const VideoListItem = (props) => {
+            //     const video = props.video;
+            //     return <li>Video</li>
+            // }
+
+            //ES6 syntax sugar below (does same as above)
+            const VideoListItem = ({video}) => {
+                // this argument above says --props being passed in has a video property, lets use that
+
+                const imageUrl = video.snippet.thumbnails.default.url;
+
+                // use CURLY BRACES to access JS variable inside JSX
+                return (
+                    <li className="list-group-item">
+                        <div className="video-list media">
+                            <div className="media-left">
+                                <img className="media-object" src={imageUrl} alt=""/>
+                            </div>
+
+                            <div className="media-body">
+                                <div className="media-heading">{video.snippet.title}</div>
+                            </div>    
+                        </div>
+                    </li>
+                );
+            };
+
+            export default VideoListItem;
+===============================================================================
+
+BUILDING NEW COMPONENTS AND WAITING FOR DATA:
+
+    ---> ALWAYS ask yourself, do I expect this component to need to maintain any type of state
+    ---> the video_detail component will only need video title, descript, and url ---> all passed
+    in from props DONT REALLY NEED ANY STATE ---> use functional component
+
+
+        index.js:
+
+            import React, { Component } from 'react';
+            import ReactDOM from 'react-dom';
+            import YTSearch from 'youtube-api-search';
+            import SearchBar from './components/search_bar';
+            import VideoList from './components/video_list';
+            import VideoDetail from './components/video_detail';
+            const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+            class App extends Component {
+                constructor(props) {
+                    super(props)
+
+                    this.state = { videos: [] };
+
+                    YTSearch({key: API_KEY, term: "surfboards"}, (videos) => {
+                        this.setState({ videos });
+                    });
+                }
+                render() {
+                    // VideoList component can iterate over the array of videos, but how will VideoDetail
+                    // know which data to render??? ASYNC ERROR ---> rendering things before they come in
+                    // REACT wants to RENDER STUFF IMMEDIATELY, some parent components can't get info fast
+                    // enough for child components
+                    // Inside of VideoDetail file, we will add a check 
+                    return (
+                        <div>
+                            <SearchBar />
+                            <VideoDetail video={this.state.videos[0]}/>
+                            <VideoList videos={this.state.videos}/>   
+                        </div>
+                    );
+                }
+            }
+
+            ReactDOM.render(<App />, document.querySelector('.container'));
+
+    video_detail.js:
+
+            import React from 'react';
+
+            const VideoDetail = ({video}) => {
+
+                // this will handle React rendering page before videos get loaded
+                // return statement means none of the rest of the code will run --> avoid ERROR of id
+                // of undefined
+                if(!video){
+                    // we don't want 10 million spinners (waiting signs) so one on a parent comp is good
+                    return <div>Loading...</div>;
+                }
+
+                const videoId = video.id.videoId;
+                const url = `https://www.youtube.com/embed/${videoId}`;
+
+                return (
+                    <div className="video-detail col-md-8">
+                        <div className="embed-responsive embed-responsive-16by9">
+                            <iframe className="embed-responsive-item" src={url} frameborder="0"></iframe>
+                        </div>
+                        <div className="details">
+                            <div>{video.snippet.title}</div>
+                            <div>{video.snippet.description}</div>
+                        </div>
+                    </div>
+                )
+            }
+
+            export default VideoDetail
+===============================================================================
+
+ADDIGN SELECTED VIDEO FEATURE AND PASSING IT TO DATA TO VIDEO DETAILS
+===============================================================================
+
+CHANGING PARENT STATE FROM CHILD COMPONENT (CHILD TO PARENT COMMUNICATION)
+
+--> BASICALLY, CHILDREN COMPONENTS NEED TO CHANGE THE PARENT STATE, BUT THEY ARE CLASSES AND DON'T
+HAVE ACCESS TO THIS.STATE
+---> SO THE PARENT MUST PASS DOWN A FUNCTION TO THE CHILD COMPONENT, SO IT HAS A HANDLE WITH WHICH
+TO CHANGE THE PARENT STATE WITH
+
+---> Child-to-parent communication is a little more complicated. The standard way of doing this is to 
+have the parent pass a function to the child through props. The child then calls this function at some 
+point and passes it a value that the parent is supposed to react to. We then write the functionality 
+for the parent's reaction inside the parent component.
+
+    index.js:
+            import React, { Component } from 'react';
+            import ReactDOM from 'react-dom';
+            import YTSearch from 'youtube-api-search';
+            import SearchBar from './components/search_bar';
+            import VideoList from './components/video_list';
+            import VideoDetail from './components/video_detail';
+            const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+            class App extends Component {
+                constructor(props) {
+                    super(props)
+
+                    // We'll add selected video to state, and start it off as null
+                    this.state = { 
+                        videos: [],
+                        selectedVideo: null
+                    };
+
+                    YTSearch({key: API_KEY, term: "surfboards"}, (videos) => {
+                        // adding selected video, will be video object and always passed into VideoDetail
+                        // to update selected video we'll pass a CALLBACK from APP to VIDEOLIST and then 
+                        // from VideoList into VideoListItem
+                        // whenever VideoListItem is clicked it will run the callback with video that belongs to it
+
+                        this.setState({ 
+                            videos: videos,
+                            selectedVideo: videos[0]
+                        });
+                    });
+                }
+                render() {
+                    // Adding a CALLBACK TO VIDEOLIST, it will setState on App
+                    // HERE WE PASS DOWN A SETSTATE FUNCTION TO VIDEOLIST WHICH HANDS IT TO
+                    //VIDEOLISTITEM. SO WHEN VIDEOLISTITEM GETS CLICKED, IT CAN CHANGE THE
+                    //PARENT STATE 'SELECTEDVIDEO' TO THE VIDEO OBJ THAT GOT CLICKED
+                    return (
+                        <div>
+                            <SearchBar />
+                            <VideoDetail video={this.state.selectedVideo}/>
+                            <VideoList 
+                                onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
+                                videos={this.state.videos}
+                            />   
+                        </div>
+                    );
+                }
+            }
+
+            ReactDOM.render(<App />, document.querySelector('.container'));
+
+    video_list.js:
+
+            import React from 'react';
+            import VideoListItem from './video_list_item';
+
+            const Videolist = (props) => {
+
+                const videoItems = props.videos.map((video) => {
+                    // Here we will take the prop coming from VideoList (in App component) and 
+                    // passing it down to VideoListItem (which will know what video gets clicked)
+                    return (
+                        <VideoListItem
+                            onVideoSelect={props.onVideoSelect}
+                            key={video.etag} 
+                            video={video} 
+                        />
+                    )
+                });
+
+    video_list_item.js:
+
+            import React from 'react';
+
+            // So now VideoList Item has access to onVideoSelect:
+            const VideoListItem = ({video, onVideoSelect}) => {
+
+                const imageUrl = video.snippet.thumbnails.default.url;
+                // ADDING ONCLICK FUNCTIONALITY TO PASS CLICKED VIDEO UP TO THE PARENT'S STATE
+                return (
+                    <li className="list-group-item" onClick={ () => onVideoSelect(video) }>
+                        <div className="video-list media">
+                            <div className="media-left">
+                                <img className="media-object" src={imageUrl} alt=""/>
+                            </div>
+
+                            <div className="media-body">
+                                <div className="media-heading">{video.snippet.title}</div>
+                            </div>    
+                        </div>
+                    </li>
+                );
+            };
+
+            export default VideoListItem;
+===============================================================================
 
