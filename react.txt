@@ -242,6 +242,199 @@ all its children to re-render
                 }
             }
             export default SearchBar;
-
-
 ===============================================================================
+
+CONTROLLED COMPONENTS
+    --->CONTROL FIELD is a FORM ELEMENT (like input) whose value is set by state, not other way around
+
+            import React, { Component} from 'react';
+
+            class SearchBar extends Component {
+                constructor(props){
+                    super(props);
+
+                    this.state = { term: "" };
+                }
+
+                render() {
+                    // when we add value to component, becomes CONTROLLED COMPONENT
+                    // has its value set by state
+                    return(
+                        <div>
+                            <input 
+                            value = {this.state.term}
+                            onChange={(event) => this.setState({ term: event.target.value })} />
+                        </div>
+                    );
+                    // First thing that happens: index.js creates an instance of SearchBar
+                    // Then constructor on SearchBar gives it a state of { term: ''}
+                    // When someone types in input, setState changes state, but value of input is not yet changed
+                    // we've only called event handler with new value
+                    // Event handler runs, updating this.state.term to new value
+                    // When setState is called our component immediately re-renders
+                    // So when "render" is called again, input value receives updated this.state.term
+                }
+            }
+            // deleting onChange will make input useless, can't type in it
+
+
+            export default SearchBar;
+===============================================================================
+
+DOWNWARDS DATA FLOW
+    --> All the React components (in their different files) need to know
+    about the data coiming in from youtube API. Who makes the call? how is data shared?
+
+    ---> Downwards data flow means that ONLY THE MOST PARENT COMPONENT should be
+    responsible for fetching data. Be API, or Flux or Redux
+===============================================================================
+TURNING APP INTO CLASS COMPONENT AND ADDING STATE OF VIDEO SEARCH
+
+            import React, { Component } from 'react';
+            import ReactDOM from 'react-dom';
+            import YTSearch from 'youtube-api-search';
+            import SearchBar from './components/search_bar';
+            const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+            // We want to convert App from FUNCTIONAL component to CLASS component
+            // const App = () => {
+            //     return (
+            //         <div>
+            //             <SearchBar />
+            //         </div>
+            //     );
+            // }
+            // change const to class, add extends Component, (import Component up top)
+            // and add render method, everything else should work the same
+            // now we want to add YTSearch data to state of App, so make state in constructor
+            class App extends Component {
+                constructor(props) {
+                    super(props)
+
+                    // the state will contain the videos from YTSearch
+                    this.state = { videos: [] };
+
+                    //YTSearch will be updating, so its DATA CHANGING OVER TIME -> sounds like STATE
+                    // Moving YTSearch into constructor so its part of our component state
+                    YTSearch({key: API_KEY, term: "surfboards"}, (videos) => {
+                        // this.setState({ videos: videos});
+                        // ES6 syntax sugar, if an object has the same key and value name do this:
+                        this.setState({ videos });
+                    });
+                }
+                render() {
+                    return (
+                        <div>
+                            <SearchBar />
+                        </div>
+                    );
+                }
+            }
+
+            ReactDOM.render(<App />, document.querySelector('.container'));
+===============================================================================
+
+PASSING PROPS FROM PARENT COMPONENT
+
+index.js
+
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import YTSearch from 'youtube-api-search';
+import SearchBar from './components/search_bar';
+import VideoList from './components/video_list'
+const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+class App extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = { videos: [] };
+
+        YTSearch({key: API_KEY, term: "surfboards"}, (videos) => {
+            this.setState({ videos });
+        });
+    }
+    // imported VideoList up top, now we add it to App under SearchBar
+    // VideoList needs access to YTSearch and this.state.videos to render vids list 
+    // So we need to pass some data FROM PARENT COMPONENT APP TO CHILD COMPONENT VIDEOLIST
+    // we do this by defining a property on the JSX tag (videos={this.state.videos})
+    // THIS IS PASSING PROPS!!!!!!!!!!!!!
+    render() {
+        return (
+            <div>
+                <SearchBar />
+                <VideoList videos={this.state.videos}/>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(<App />, document.querySelector('.container'));
+
+
+
+video_list.js
+
+import React from 'react';
+
+// This list is a DUMB LIST -- does not need state, it only shows stuff on App state
+// When props are passed in from index.js, they arrive as an argument in the functional component
+// arrives as 'props' //// BUT IF THIS WAS A CLASS, it would universally be available
+// as this.props
+const Videolist = (props) => {
+    const videos = props.video;
+    return (
+        <ul className="col-md-4 list-group">
+            {props.videos.length}
+        </ul>
+    );
+};
+
+export default Videolist;
+===============================================================================
+MAKING EACH VIDEO LIST ITEM COMPONENT AND RENDERING 
+
+
+video_list.js
+
+            import React from 'react';
+            import VideoListItem from './video_list_item';
+
+            // Now we want to loop through videos array, assign each video to "video_list_item" components
+            // Build a loop NOT FOR LOOP (JS for loops are not great in general, 
+            // instead use built in iterators like MAP)
+            const Videolist = (props) => {
+
+                // So we import the VideoListItem component, loop through the props coming in
+                // create a new array 'videoItems' containing VideoListItem components to which
+                // we pass the video data as props
+                const videoItems = props.videos.map((video) => {
+                    return <VideoListItem video={video} />
+                });
+
+                const videos = props.video;
+                // Passing in videoItems in curly braces because it is a JSX variable
+                // React is INTELLIGENT WHEN RENDERING ARRAYS OF ITEMS
+                return (
+                    <ul className="col-md-4 list-group">
+                        {videoItems}
+                    </ul>
+                );
+            };
+
+export default Videolist;
+
+
+            video_list_item.js
+
+            import React from 'react';
+
+            const VideoListItem = (props) => {
+                return <li>Video</li>
+            }
+
+            export default VideoListItem;
+===============================================================================
+
+
