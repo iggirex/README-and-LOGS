@@ -795,6 +795,55 @@ called React-Redux
 CONTAINER 
 --> git is a React component that has direct connection to the state managed by Redux
 
+    book_list.js
+
+            import React, {Component} from 'react';
+            import { connect } from 'react-redux';
+            import { selectBook } from '../actions/index';
+
+            class BookList extends Component {
+                renderList() {
+                    return this.props.books.map((book) => {
+                        return (
+                            <li key={book.title} className="list-group-item">{book.title} </li>
+                        )
+                    })
+                }
+
+                render() {
+                    return (
+                        <ul className="list-group col-sm-4">
+                            {this.renderList()}
+                        </ul>
+                    )
+                }
+            }
+
+                // mapStateToProps is what connects React to Redux
+                // whenever application state changes, this 
+                // container (BookList) will rerender
+            function mapStateToProps(state) {
+                // Whatever is returned will show up as props insed BookList
+                return {
+                    books: state.books
+                };
+            }
+
+                // HERE WE USE CONNECT FUNCTION WE IMPORTED
+                // connect is what says "take this component, take this 
+                // mapStateToProps" and RETURN A CONTAINER
+                // whenever we make a container we don't want to export 
+                // BookList class,
+                // we want to export the container
+            export default connect(mapStateToProps)(BookList);
+                // connect takes a function and a component and
+                // produces a container
+                // container => a component that is aware of the state that is
+                // contained by redux
+
+                // MapStateToProps => returns an object which is available as
+                // this.state.props
+
 ===============================================================================
 
 REDUCERS
@@ -806,3 +855,283 @@ REDUCERS
 ACTIONS AND ACTION CREATORS
 
 --> These are for changing State
+
+--> Everything in a Redux application starts with an event created by user
+    ---> user clicks something, hovering on element, or indirect like AJAX request finishing
+
+--> These events call an ACTION CREATOR --> function that returns an action
+--> ACTION CREATOR is a function that RETURNS AN OBJECT
+
+--> this object is then sent automatically to all the different reducers in App
+
+-->reducers can CHOOSE TO RETURN A DIFFERENT PIECE OF STATE
+
+--> this newly returned piece of state gets piped to the application state
+
+--> finally, the new application state gets pumped back into React Application
+causing all the components to re-render
+
+--> action creator has a "TYPE" that describes the type of action that was just triggered
+also has data that describes action
+
+--> THE OBJECT RETURNED BY ACTION CREATOR IS THE ACTUAL ACTION
+
+--> Reducers have a switch statement to receive ACTION, switch statement decides response
+to action depending on what action is
+
+--> Reducers return either 1) same state 2) change piece of state to global state
+
+--> When all reducers process action, new assembled STATE gets pumped back to all different
+containers --> All diff containers will run func mapStateToProps --> new State will be dissected
+---> all the containers will re-render with all their data
+
+
+FLOWWWW:
+
+----> First thing when app starts up, STATE is set by Redux reducers, index imports
+all reducers and sets GLOBAL STATE:
+
+        index.js (reducers):
+
+            import { combineReducers } from 'redux';
+            import BooksReducer from './reducer_books';
+            import ActiveBook from './reducer_active_book';
+
+            const rootReducer = combineReducers({
+                books: BooksReducer,
+                activeBook: ActiveBook
+            });
+
+            export default rootReducer;
+
+---> So index goes through these other reducers to see what to set to GLOBAL STATE
+---> In this case, there is no action (nothing has happened yet) so state of 
+state (globally speaking -> state.book) is set to NULL
+
+        reducer_active_book.js:
+
+            // all reducers get two arguments, current state and action
+            // State argument is not application state, only the state this
+            // reducer is responsible for
+
+            // state = null --> if state is undefined, it's set to null
+            // redux throws error if it returns "undefined"
+            export default function(state = null, action) {
+                switch(action.type) {
+                    case "BOOK_SELECTED":
+                        return action.payload;
+                }
+                
+                return state;
+            }
+
+---> So at this point, state.books has a collection of books, state.book is null
+---> Now React goes to Render our App component, which tells it to render our
+<Booklist /> and <BookDetail />
+---> Book List returns JSX for the book collection
+---> BookDetail goes to book-detail below...
+
+        app.js:
+
+            import React, { Component } from 'react';
+
+            import BookList from '../containers/book-list';
+            import BookDetail from '../containers/book-detail'
+
+            export default class App extends Component {
+            render() {
+                return (
+                <div>
+                    <BookList />
+                    <BookDetail />
+                </div>
+                );
+            }
+            }
+    
+---> React is now trying to render BookDetail from this file, but it already went to
+reducer_active_book.js and figured out its null because no actions yet
+---> We catch the this.props.book is null and render a message to get started
+
+        /containers/book-detail.js:
+
+            import React, { Component } from 'react';
+            import { connect } from 'react-redux';
+
+            // include conditional because state of activeBook is null until something is clicked
+            // without this, it will ERROR at this.props.book.title (null)
+
+            //BookDetail is now a CONTAINER with its mapStateToProps function which
+            // sets a property "book" to Redux State, (BookList added property "books")
+            // so book is active selected book, and books is entire collection
+            class BookDetail extends Component {
+                render(){
+                    if(!this.props.book){
+                        return <div>Select a book to get started</div>;
+                    }
+
+                    return (
+                        <div>
+                            <h3>Details for:</h3>
+                            <div>{this.props.book.title}</div>
+                        </div>
+                    );
+                }
+            }
+
+            function mapStateToProps(state) {
+                return {
+                    book: state.activeBook
+                };
+            }
+
+            export default connect(mapStateToProps)(BookDetail);
+
+---> Now when a book gets clicked on in our <BookList />, the onClick handler fires off
+this.props.selectBook ---> which was imported (import { selectBook } from '../actions/index';)
+---> selectBook is the ACTION CREATOR which we made with:
+    function mapDispatchToProps(dispatch) and then the connect function
+---> onClick handler gives out the specific book information which was clicked (book)
+---> so the onClick handler fires a dispatch, running THE ACTION CREATORS
+
+
+        /containers/book-list.js:
+
+            import React, {Component} from 'react';
+            import { connect } from 'react-redux';
+            import { selectBook } from '../actions/index';
+
+            // bindActionCreators is what we use to make sure ACTION created by ACTION CREATOR
+            // actually ends up flowing through all different reducers
+            import { bindActionCreators } from 'redux';
+
+            class BookList extends Component {
+                renderList() {
+                    return this.props.books.map((book) => {
+                        // down here we add a click handler to run this.props.selectBook and pass
+                        // the particular book that was clicked
+                        return (
+                            <li 
+                                key={book.title}
+                                onClick={() => this.props.selectBook(book)}
+                                className="list-group-item">
+                                {book.title} 
+                            </li>
+                        )
+                    })
+                }
+
+                render() {
+                    return (
+                        <ul className="list-group col-sm-4">
+                            {this.renderList()}
+                        </ul>
+                    )
+                }
+            }
+
+            function mapStateToProps(state) {
+                return {
+                    books: state.books
+                };
+            }
+            // this CALLS ACTION CREATOR --> selectBook and SENDS ACTION TO ALL REDUCERS
+            // Anything returned from this function will end up as PROPS on BookList CONTAINER
+
+            function mapDispatchToProps(dispatch) {
+                // selectBook value is the function we imported at top of file
+                // whenever selectBook is called the result should be passed to all reducers
+                // ---> thats what ActionCreators is doing with DISPATCH --> sends to all reducers
+
+                return bindActionCreators({ selectBook: selectBook}, dispatch);
+
+                // so now on our container we can call this.props.selectBook and it 
+                // will call our ACTION CREATOR
+            }
+
+            // Down here we add another argument
+            // Promote book list from a component to container, it needs to know about
+            // this dispatch method SelectBook. Make it available as a prop
+            export default connect(mapStateToProps, mapDispatchToProps)(BookList);
+
+
+---> ACTION CREATOR for selectBook is run, it returns a NEW ACTION
+---> the NEW ACTION IS AUTOMATICALLY SENT TO ALL REDUCERS
+
+        /actions/index.js:
+
+            export function selectBook(book) {
+                // SelectBook is an ACTIONCREATOR NEEDS TO RETURN AN ACTION
+                // ACTION IS OBJECT WITH TYPE PROPERTY AND PAYLOAD
+                return {
+                    type: "BOOK_SELECTED",
+                    payload: book
+                };
+            }
+
+---> The reducer waiting for action.type = "BOOK_SELECTED" is run, and the type satisfies
+switch case statement
+---> So we RETURN THE NEW STATE OF state.book (state.payload)
+
+        /reducers/reducer_active_book.js:
+
+            export default function(state = null, action) {
+                switch(action.type) {
+                    case "BOOK_SELECTED":
+                        return action.payload;
+                }
+
+                return state;
+            }
+
+---> Reducers go to get processed in rootReducer
+---> ActiveBook is imported in rootReducer, and passes selected book into global state
+
+        /reducers/index.js:
+
+            import { combineReducers } from 'redux';
+            import BooksReducer from './reducer_books';
+            import ActiveBook from './reducer_active_book';
+
+            const rootReducer = combineReducers({
+                books: BooksReducer,
+                activeBook: ActiveBook
+            });
+
+            export default rootReducer;
+
+---> New state is assembled by rootReducer, so React CONTAINER of book-detail.js updates
+---> Since this.props.book exists now, React render the book that was clicked
+
+        /containers/book-detail.js:
+
+            import React, { Component } from 'react';
+            import { connect } from 'react-redux';
+
+            //BookDetail is now a CONTAINER with its mapStateToProps function which
+            // sets a property "book" to Redux State, (BookList added property "books")
+            // so book is active selected book, and books is entire collection
+            class BookDetail extends Component {
+                render(){
+                    if(!this.props.book){
+                        return <div>Select a book to get started</div>;
+                    }
+
+                    return (
+                        <div>
+                            <h3>Details for:</h3>
+                            <div>{this.props.book.title}</div>
+                        </div>
+                    );
+                }
+            }
+
+            function mapStateToProps(state) {
+                return {
+                    book: state.activeBook
+                };
+            }
+
+            export default connect(mapStateToProps)(BookDetail);
+
+
