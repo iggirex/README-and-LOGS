@@ -801,4 +801,8 @@ REDUCERS
 
 --> A reducer is a function that returns a piece of an applications state
 --> An app can have many pieces of state, so the same amount of reducers
+===============================================================================
 
+ACTIONS AND ACTION CREATORS
+
+--> These are for changing State
