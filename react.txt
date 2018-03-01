@@ -692,3 +692,113 @@ for the parent's reaction inside the parent component.
             export default VideoListItem;
 ===============================================================================
 
+MAKING SEARCHBAR WORK (MORE CHILD TO PARENT COMMUNICATION)
+
+---> adding function to App class, then handing it down
+
+        index.js:
+            import React, { Component } from 'react';
+            import ReactDOM from 'react-dom';
+            import YTSearch from 'youtube-api-search';
+            import SearchBar from './components/search_bar';
+            import VideoList from './components/video_list';
+            import VideoDetail from './components/video_detail';
+            const API_KEY = "AIzaSyBsX85XkZym24Kioz9iqQXmSG2ktLtTBdY";
+
+            class App extends Component {
+                constructor(props) {
+                    super(props)
+
+                    this.state = { 
+                        videos: [],
+                        selectedVideo: null
+                    };
+                    // TOOK out YTSearch, but we still want constructor to initialize a search
+                    this.videoSearch('surfboards');
+                }
+                
+                // Defining NEW CALLBACK for new video searches to pass down in render
+                videoSearch(term) {
+                    YTSearch({key: API_KEY, term: term}, (videos) => {
+                        this.setState({ 
+                            videos: videos,
+                            selectedVideo: videos[0]
+                        });
+                    });
+                }
+
+                render() {
+                    return (
+                        <div>
+                            <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
+                            <VideoDetail video={this.state.selectedVideo}/>
+                            <VideoList 
+                                onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
+                                videos={this.state.videos}
+                            />   
+                        </div>
+                    );
+                }
+            }
+
+            ReactDOM.render(<App />, document.querySelector('.container'));
+
+
+        search_bar.js:
+            import React, { Component} from 'react';
+
+            class SearchBar extends Component {
+                constructor(props){
+                    super(props);
+
+                    this.state = { term: "" };
+                }
+
+                render() {
+                    return(
+                        <div className="search-bar">
+                            <input 
+                                value = {this.state.term}
+                                onChange={event => this.onInputChange(event.target.value)} />
+                        </div>
+                    );
+                }
+                // Adding a method down here to reference THIS.PROPS.onSearchTermChange and
+                // pass it the term
+                onInputChange(term) {
+                    this.setState({term});
+                    this.props.onSearchTermChange(term);
+                }
+            }
+
+            export default SearchBar;
+===============================================================================
+
+
+===============================================================================
+===============================================================================
+===============================================================================
+
+REDUX
+
+--> predictable state container for JS applications
+
+--> There is no intrinsic connection between React and Redux, need a library just to join the two
+called React-Redux
+
+--> A collection of all the data relates to the app --> List of videos, which video is selected
+--> ALl data is centralized into a central single object, THE STATE
+
+--> Design a COMPONENT AS A CONTAINER
+===============================================================================
+
+CONTAINER 
+--> git is a React component that has direct connection to the state managed by Redux
+
+===============================================================================
+
+REDUCERS
+
+--> A reducer is a function that returns a piece of an applications state
+--> An app can have many pieces of state, so the same amount of reducers
+
