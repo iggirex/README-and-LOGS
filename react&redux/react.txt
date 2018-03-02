@@ -1135,3 +1135,72 @@ switch case statement
             export default connect(mapStateToProps)(BookDetail);
 
 
+===============================================================================
+===============================================================================
+===============================================================================
+
+MIDDLEWARE
+
+--> All actions run through a middleware stage, and middlewares can modify actions
+
+---> Middle ware are like doormen, or bouncers, that act between the ACTION CREATOR and
+reducer. They inspect and act upon the ACTION, and let it through, return something else,
+or don't let it through
+
+---> can have 1, 0, or 1000000 middlewares before action hits the reducer
+    setup
+
+        conatiners/search_bar.js
+
+            import React, { Component } from 'react';
+
+            export default class SearchBar extends Component {
+                // TO MAKE CONTROLLED FIELD
+                // 1 make state -- add constructor and initial state obj
+                // 2 add event handler on input
+                // 3 define event handler in class
+                constructor(props) {
+                    super(props);
+
+                    this.state = { term: "" };
+
+                    //  when calling onInputChange, it will ERROR unless 'this' is bound to it
+                    // because 'this' will be watever object calls onInputChange instead of
+                    // the state object.
+
+                    // So this says , GRAB THIS CLASS'S ONINPUTCHANGE, BIND IT WITH THIS (POINTING
+                    // BACK TO CLASS), AND THEN REPLACE THE CURRENT ONINPUT CHANGE DEFINED IN
+                    // CLASS
+                    this.onInputChange = this.onInputChange.bind(this)
+                }
+
+                onInputChange(event) {
+                    console.log(event.target.value);
+                    this.setState({term: event.target.value})
+                }
+
+                onFormSubmit(event) {
+                    event.preventDefault();
+                }
+
+                render() {
+                    // A controlled field is a form element where the value of the input is set
+                    // by the state of the component. State will be the input, need to change 
+                    // component state with every input
+                    return (
+                        <form onSubmit={this.onFormSubmit} className="input-group"> 
+                            <input 
+                                placeholder="Get a five-day forecast in your favorite cities"
+                                className="form-control"
+                                value={this.state.term}
+                                onChange={this.onInputChange}
+                            />
+                            <span className="input-group-btn">
+                                <button type="submit" className="btn btn-secondary">Submit</button>
+                            </span>
+                        </form>
+                    )
+                }
+            }
+
+===============================================================================
