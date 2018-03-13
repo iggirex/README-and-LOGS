@@ -11,4 +11,29 @@ To do run webpack in production mode add flag -p
 To make webpack keep watching and rebuilding bundle.js when file changes:
 
     webpack ./src/app.js ./dist/app.bundle.js -p --watch
-    
+
+Webpack needs configuration file, at least needs:
+1) entry file
+2) output path that has two things 1) path 2) filename
+3) be a "module.exports"
+
+        const path = require('path');
+
+        module.exports = {
+            entry: './src/app.js',
+            output: {
+                path: path.resolve(__dirname, 'dist'),
+                filename: 'app.bundle.js'
+            }
+        };
+
+--> With this config file, you can simply run "webpack"
+
+--> Good to add scripts to package.json for runnign webpack:
+
+        "scripts": {
+            "dev": "webpack -d --watch",
+            "prod": "webpack -p"
+        },
+
+--> Runs with "npm run dev" or "npm run prod"
