@@ -1,0 +1,14 @@
+npm i --save-dev webpack
+
+to run webpack on a file specify file and output:
+
+    webpack ./src/app.js ./dist/app.bundle.js
+
+To do run webpack in production mode add flag -p
+
+    webpack ./src/app.js ./dist/app.bundle.js -p
+
+To make webpack keep watching and rebuilding bundle.js when file changes:
+
+    webpack ./src/app.js ./dist/app.bundle.js -p --watch
+    
