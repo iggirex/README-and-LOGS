@@ -37,3 +37,23 @@ Webpack needs configuration file, at least needs:
         },
 
 --> Runs with "npm run dev" or "npm run prod"
+
+--> index.html needs script tag to link to bundle.js
+
+        <script src="app.bundle.js"></script>
+
+
+PLUGINS---->
+
+--> Added this way in webpack.config.js:
+
+        const path = require('path');
+        const HtmlWebpackPlugin = require('html-webpack-plugin');
+        module.exports = {
+            entry: './src/app.js',
+            output: {
+                path: path.resolve(__dirname, 'dist'),
+                filename: 'app.bundle.js'
+            },
+            plugins: [new HtmlWebpackPlugin()]
+        };
