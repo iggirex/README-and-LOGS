@@ -1,0 +1,26 @@
+OMG ----> @media queries are AWESOME!!
+
+@media all and (min-width: 480px) {
+    THIS WILL WORK at 480px width and ABOVE!
+}
+
+@media all and (min-width: 300px) {
+    THIS WILL WORK FROM 300px width up to 480px, at 480 the above media query will override
+}
+
+        meaning of the not, only and and keywords:
+
+        not: The not keyword reverts the meaning of an entire media query.
+
+        only: The only keyword prevents older browsers that do not support media queries with media 
+        features from applying the specified styles. It has no effect on modern browsers.
+
+        and: The and keyword combines a media feature with a media type or other media features.
+
+        They are all optional. However, if you use not or only, you must also specify a media type.
+
+
+You can also have different stylesheets for different media, like this:
+
+<link rel="stylesheet" media="screen and (min-width: 900px)" href="widescreen.css">
+<link rel="stylesheet" media="screen and (max-width: 600px)" href="smallscreen.css">
