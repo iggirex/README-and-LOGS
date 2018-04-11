@@ -1,15 +1,21 @@
-undo changes before they have been "git add"ed
-git checkout -- <file_name>
+UNDO THIS THING I JUST DID!
 
-stash changes before they have been "git add"ed
-git stash
+    undo changes before they have been "git add"ed
+    $ git checkout -- <file_name>
 
-undo changes after they have been "git add"ed
-git reset <file_name> || git reset
+    stash changes before they have been "git add"ed
+    $ git stash
 
-undo changes after git commit
+    undo changes after they have been "git add"ed
+    $ git reset <file_name> || git reset
+
+    undo changes after git commit
 
 
-go back and forth in commit history
-git checkout <commit_hash>
+WHERE AM I
 
+    go back and forth in commit history
+    $ git checkout <commit_hash>
+
+    what commit am I currently on?
+    $ git show
