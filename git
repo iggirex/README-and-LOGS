@@ -1,0 +1,15 @@
+undo changes before they have been "git add"ed
+git checkout -- <file_name>
+
+stash changes before they have been "git add"ed
+git stash
+
+undo changes after they have been "git add"ed
+git reset <file_name> || git reset
+
+undo changes after git commit
+
+
+go back and forth in commit history
+git checkout <commit_hash>
+
