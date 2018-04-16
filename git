@@ -19,3 +19,10 @@ WHERE AM I
 
     what commit am I currently on?
     $ git show
+
+
+FUN WITH BRANCHES
+
+    delete branch locally and remotely
+    $ git push <remote_name> --delete <branch_name>
+    $ git branch -d <branch_name>
