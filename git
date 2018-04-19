@@ -12,7 +12,7 @@ UNDO THIS THING I JUST DID!
     undo changes after git commit
 
 
-WHERE AM I
+WHERE AM I?
 
     go back and forth in commit history
     $ git checkout <commit_hash>
