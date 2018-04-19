@@ -1,15 +1,15 @@
 
 CONFIGURING ESLINT
 
-------------------------------------------------
-ESLINTRC FILE EXAMPLE FOR USING REACT AND MOCHA:
-------------------------------------------------
+-----------------------------------------------------
+ESLINTRC FILE EXAMPLE FOR USING REACT AND MOCHA/CHAI:
+-----------------------------------------------------
 {
     "env": {
         "es6": true,
         "node": true,
         "browser": true,
-        "mocha": true
+        "mocha": true,
     },
     "parser": "babel-eslint",
     "plugins": [
@@ -17,10 +17,9 @@ ESLINTRC FILE EXAMPLE FOR USING REACT AND MOCHA:
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "chai-friendly"
     ],
-
-
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": 2017
@@ -50,6 +49,7 @@ ESLINTRC FILE EXAMPLE FOR USING REACT AND MOCHA:
         "no-console": 0
     }
 }
+
 
 ------------------------------------------------
 REACT SPECIFIC ESLINT SETTINGS:
