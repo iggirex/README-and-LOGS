@@ -1,6 +1,22 @@
 
-CONFIGURING ESLINT
+-----------------------------------------------------
+INSTALLING ESLINT
+-----------------------------------------------------
 
+1) Download/install ESlint package for your text editor/IDE
+2) Either install eslint globally or locally
+    $ npm i -g eslint
+    $ npm i --save-dev eslint
+3) Restart code editor
+
+
+
+-----------------------------------------------------
+----------   CONFIGURING ESLINT   -------------------
+-----------------------------------------------------
+
+--> Can autogenerate eslintrc file with command below, and choose if using React, JS, etc
+    $ eslint --init
 -----------------------------------------------------
 ESLINTRC FILE FOR SIMPLE JS PROJECT
 -----------------------------------------------------
@@ -69,8 +85,8 @@ REACT SPECIFIC ESLINT SETTINGS:
 {
   "extends": ["eslint:recommended", "plugin:react/recommended"]
 }
-I like to just add all this junk to rules so I have quick access when I want to disable something, but maybe that's just me.
 
+AVAILABLE RULES:
 {
   "rules": {
     "jsx-quotes"       : 1,
@@ -112,3 +128,19 @@ I like to just add all this junk to rules so I have quick access when I want to 
     "react/wrap-multilines": 1
   }
 }
+
+
+------------------------------------------------
+PRETTIER:
+------------------------------------------------
+
+1) install prettier on text editor/IDE
+2) make .prettierc file in root folder, example file:
+
+        {
+            "printWidth": 100,
+            "parser": "flow",
+            "tabWidth": 4,
+            "singleQuote": true
+        }
+3) restart text editor/IDE
