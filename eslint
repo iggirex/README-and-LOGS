@@ -2,6 +2,17 @@
 CONFIGURING ESLINT
 
 -----------------------------------------------------
+ESLINTRC FILE FOR SIMPLE JS PROJECT
+-----------------------------------------------------
+
+{   
+   "extends": "eslint:recommended",
+   "env": {
+       "browser": true
+   }
+}
+
+-----------------------------------------------------
 ESLINTRC FILE EXAMPLE FOR USING REACT AND MOCHA/CHAI:
 -----------------------------------------------------
 {
