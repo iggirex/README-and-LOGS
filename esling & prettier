@@ -135,7 +135,7 @@ PRETTIER:
 ------------------------------------------------
 
 1) install prettier on text editor/IDE
-2) make .prettierc file in root folder, example file:
+2) make .prettierrc file in root folder, example file:
 
         {
             "printWidth": 100,
