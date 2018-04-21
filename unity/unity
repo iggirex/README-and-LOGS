@@ -1,0 +1,17 @@
+Sprites Import Settings
+
+Sprite Mode
+    -Single --> single image
+    -Multiple --> sprite sheet
+    --Polygon --> not square shaped image
+
+Texture Type
+    -Sprite(2D and UI) --> Preserved black space, access to Sprite Editor
+    Pivot --> What is the center of the sprite, point where image will rotate
+    Generate Mip Map --> Smaller images appear as sprite if it is to appear further away (uses persepective camera)
+    Filter Mode --> Determines how image will look closer or further away (persepective camera)
+                --> Billinear & Trilinear: closer & further will blurr
+                --> Point: will get blocky
+    -Packing Tag --> Unity puts all sprites into one 
+    ->Default Size and Compression Settings
+    
