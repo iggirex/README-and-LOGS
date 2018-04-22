@@ -10,7 +10,8 @@ Sprites Import Settings
     Texture Type
         -Sprite(2D and UI) --> Preserved black space, access to Sprite Editor
         Pivot --> What is the center of the sprite, point where image will rotate
-        Generate Mip Map --> Smaller images appear as sprite if it is to appear further away (uses persepective camera)
+        Generate Mip Map --> Smaller images appear as sprite if it is to appear further away 
+                            (uses persepective camera)
         Filter Mode --> Determines how image will look closer or further away (persepective camera)
                     --> Billinear & Trilinear: closer & further will blurr
                     --> Point: will get blocky
@@ -41,7 +42,38 @@ GOOD WAY:
 ---> Sorting layer OVERRIDES Z AXIS ---> In 3d space a sprite could be behind another, but in orthographic
     view, it can appear on top of the other if sorting layer states so
 
-Good layers for starting out = 3 sorting layers
+Basic layers for starting out = 3 sorting layers
 1) background
 2) foreground
 3) middleground
+
+Other setup:
+
+1) Ground, dirt
+2) Above ground (building floors)
+3) Obstacles (walls, furniture)
+4) Interactables (pickups, weapons)
+5) Characters
+
+---------------------------------
+CANVASES AND UIs
+---------------------------------
+
+UI Canvas --> Game Object that holds all of the UI elements
+                When created will be bigger than camera, will have to zoom out to see it fully. can double click
+
+        ---> Must exist to add UI elements
+
+        ---> RENDER MODE: dictates where in the scene UI elements will display
+            SCREEN SPACE - OVERLAY (most common) -- Will make all UI elements render in front of everything
+                            This canvas will resize based on size of screen, not of camera
+
+            SCREEN SPACE - CAMERA - Like screen overlay, except things are rendered as if they were a specific
+                                    distance from the camera
+                                  - For 2D games, use this for background images (that should scale with camera)
+
+
+            WORLD SPACE - UI elements render in world space coordinates, doesnt use camera
+
+    UI ELEMENTS:
+        PANEL: usefule for laying out UI, and want things to scale with screen size change
