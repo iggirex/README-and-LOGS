@@ -1,5 +1,10 @@
 UNDO THIS THING I JUST DID!
 
+    Unstaged (Un-added) files that have changed:
+    $ git clean -f
+    To see what files will be affected before running this command, can do:
+    $ git clean -n
+
     undo changes before they have been "git add"ed
     $ git checkout -- <file_name>
 
