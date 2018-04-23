@@ -77,3 +77,8 @@ UI Canvas --> Game Object that holds all of the UI elements
 
     UI ELEMENTS:
         PANEL: usefule for laying out UI, and want things to scale with screen size change
+
+
+
+
+Disable Anti Aliasing in Edit/Quality --> its for 3D games
