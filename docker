@@ -1,3 +1,7 @@
+--------------------------------
+STOPPING ROUGUE DOCKER PROCESSES
+--------------------------------
+
 docker ps
 docker stop <process ID>
 

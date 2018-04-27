@@ -1,0 +1,11 @@
+----------------------------
+Easy OpenWrt Setup with Docker
+----------------------------
+https://wiki.openwrt.org/doc/howto/docker_openwrt_image
+
+docker import http://downloads.openwrt.org/attitude_adjustment/12.09/x86/generic/openwrt-x86-generic-rootfs.tar.gz openwrt-x86-generic-rootfs
+
+check to see if it worked:
+docker run -i openwrt-x86-generic-rootfs cat /etc/banner
+
+

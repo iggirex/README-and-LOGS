@@ -1,0 +1,6 @@
+mkdir -p /parentFolder/childFolder
+
+find <in_this_dir> -name <name_of_file>
+EX:
+find / -name docker
+
