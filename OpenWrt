@@ -8,4 +8,27 @@ docker import http://downloads.openwrt.org/attitude_adjustment/12.09/x86/generic
 check to see if it worked:
 docker run -i openwrt-x86-generic-rootfs cat /etc/banner
 
+open shell:
+docker run -i -t openwrt-x86-generic-rootfs /bin/ash
 
+
+
+----------------------------
+OpenWrt Setup with VirtualBox
+----------------------------
+
+Get OpenWrt running in VirtualBox:
+https://wiki.openwrt.org/doc/howto/virtualbox#setting_up_networking
+
+
+To get SSH to work: (https://hoverbear.org/2014/11/23/openwrt-in-virtualbox/)
+    Now in /etc/config/firewall we can add a rule to fix this:
+
+    # ... Other Rules ...
+
+    # Allow SSH on wan
+    config rule
+            option src              wan
+            option proto            tcp
+            option dest_port        22
+            option target           ACCEPT
