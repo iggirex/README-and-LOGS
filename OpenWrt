@@ -41,13 +41,17 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
             --type "hdd" \
             --nonrotational "on" \
             --medium $VDI
+    
+    TROUBLESHOOT: Can't find file in location/ UUID error
+    --> When copy/pasting this code into terminal, make sure the double quotes on the first two lines
+        are not the 'curvy' quote marks, if they are, just delete and replace them in the terminal
 
 3) Now you can start the VM and SSH into it and change password:
     $ ssh root@127.0.0.1 -p 2222 
     $ passwd
 
     TROUBLESHOOT: SSH error - "ssh_exchange_identification: Connection closed by remote host"
-    --> Add this to the end of /etc/config/firewall
+    --> Add this to the end of /etc/config/firewall --> and reboot VM afterwards
 
         # Allow SSH on wan
         config rule
@@ -59,11 +63,13 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
 
 4) Finally to get LUCI accessible from a host machine's browser, edit the Firewall config:
     - Only one line needs changed in the firewall config
+    - Need to reboot VM after making this change
 
     In terminal:
     $ vi /etc/config/firewall
 
-    This is what the beginning of the firewall config looks like, and the setting that needs changed
+    This is what the beginning of the firewall config looks like, and (in the 3rd section) the 
+    one setting that needs changed
 
         config defaults
                 option syn_flood        1
