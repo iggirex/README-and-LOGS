@@ -66,7 +66,7 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
     - Need to reboot VM after making this change
 
     In terminal:
-    $ vi /etc/config/firewall
+        $ vi /etc/config/firewall
 
     This is what the beginning of the firewall config looks like, and (in the 3rd section) the 
     one setting that needs changed
