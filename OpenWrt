@@ -1,9 +1,118 @@
-----------------------------
+------------------------------------------------------------
+QUICK OpenWrt Setup in VirtualBox with working SSH and lUCI
+------------------------------------------------------------
+Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
+
+1) Download and format OpenWrt image file
+
+    The Prerequesites (Don't go further into setting up VM) steps show where to download the image, 
+    and some simple commands to ready the image for use with VirtualBox:
+    https://wiki.openwrt.org/doc/howto/virtualbox
+
+
+2) Create a VirtualBox VM from a terminal. This script includes correct port forwarding to have SSH and
+    lUCI work (almost) out of the box, only the first two lines need any changes:
+
+        VMNAME="my_OpenWrt_VM" # <CHANGE NAME FOR YOUR VM HERE>
+        VDI="/home/minhaz/openwrt-x86-64-combined-ext4.vdi" # <CHANGE RELATIVE PATH TO IMAGE HERE>
+
+        VBoxManage createvm --name $VMNAME --register && \
+        VBoxManage modifyvm $VMNAME \
+            --description "An OpenWRT VM" \
+            --ostype "Linux_64" \
+            --memory "256" \
+            --cpus "1" \
+            --nic1 "intnet" \
+            --nictype1 "82540EM" \
+            --nic2 "nat" \
+            --nictype2 "82540EM" \
+            --natpf2 "ssh,tcp,,2222,,22" \
+            --natpf2 "luci,tcp,,8080,,80" \
+            --natpf2 "ftp,tcp,,2121,,21" && \
+        VBoxManage storagectl $VMNAME \
+            --name "SATA Controller" \
+            --add "sata" \
+            --portcount "1" \
+            --hostiocache "on" \
+            --bootable "on" && \
+        VBoxManage storageattach $VMNAME \
+            --storagectl "SATA Controller" \
+            --port "1" \
+            --type "hdd" \
+            --nonrotational "on" \
+            --medium $VDI
+
+3) Now you can SSH into the VM:
+    $ ssh root@127.0.0.1 -p 2222 
+
+    And you can also change the password:
+    $ passwd
+
+4) Edit Firewall config to allow port forwarding ?? So lUCI site being served in VM can be accessed in
+    host machine's browswer
+
+    In terminal:
+    $ vi /etc/config/firewall
+
+
+
+
+
+
+
+Changing UCI
+(https://www.gilesorr.com/blog/virtualbox-openwrt.html)
+The first problem you're likely to notice after booting is that you don't have a network. 
+OpenWRT assumes it's 192.168.1.1/24, which is rarely true with VirtualBox. I've solved the problem in two ways:
+
+Method 1:
+
+# uci show network # doesn't change anything
+# uci set network.lan.ipaddr=10.0.2.15
+# uci set network.lan.netmask=255.255.255.0
+# uci commit # this updates file /etc/config/network
+# ifdown lan
+# ifup lan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
 Easy OpenWrt Setup with Docker
-----------------------------
+------------------------------
+
+NOTE: COULD NOT GET LUCI TO WORK THIS WAY
+
 https://wiki.openwrt.org/doc/howto/docker_openwrt_image
 
-docker import http://downloads.openwrt.org/attitude_adjustment/12.09/x86/generic/openwrt-x86-generic-rootfs.tar.gz openwrt-x86-generic-rootfs
+docker import 
+http://downloads.openwrt.org/attitude_adjustment/12.09/x86/generic/openwrt-x86-generic-rootfs.tar.gz 
+openwrt-x86-generic-rootfs
 
 check to see if it worked:
 docker run -i openwrt-x86-generic-rootfs cat /etc/banner
@@ -13,9 +122,12 @@ docker run -i -t openwrt-x86-generic-rootfs /bin/ash
 
 
 
-----------------------------
+-----------------------------
 OpenWrt Setup with VirtualBox
-----------------------------
+-----------------------------
+
+NOTE: COULD NOT GET LUCI TO WORK THIS WAY
+
 
 Get OpenWrt running in VirtualBox:
 https://wiki.openwrt.org/doc/howto/virtualbox#setting_up_networking
@@ -32,16 +144,3 @@ To get SSH to work: (https://hoverbear.org/2014/11/23/openwrt-in-virtualbox/)
             option proto            tcp
             option dest_port        22
             option target           ACCEPT
-
-Changing UCI
-(https://www.gilesorr.com/blog/virtualbox-openwrt.html)
-The first problem you're likely to notice after booting is that you don't have a network. OpenWRT assumes it's 192.168.1.1/24, which is rarely true with VirtualBox. I've solved the problem in two ways:
-
-Method 1:
-
-# uci show network # doesn't change anything
-# uci set network.lan.ipaddr=10.0.2.15
-# uci set network.lan.netmask=255.255.255.0
-# uci commit # this updates file /etc/config/network
-# ifdown lan
-# ifup lan
