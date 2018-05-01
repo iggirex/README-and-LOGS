@@ -42,17 +42,47 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
             --nonrotational "on" \
             --medium $VDI
 
-3) Now you can SSH into the VM:
+3) Now you can start the VM and SSH into it:
     $ ssh root@127.0.0.1 -p 2222 
 
-    And you can also change the password:
+    You can also change the password:
     $ passwd
 
-4) Edit Firewall config to allow port forwarding ?? So lUCI site being served in VM can be accessed in
-    host machine's browswer
+4) Finally to get LUCI accessible from a host machine's browser, edit the Firewall config:
+    - Only one line needs changed in the firewall config
 
     In terminal:
     $ vi /etc/config/firewall
+
+    This is what the beginning of the firewall config looks like, and the setting that needs changed
+
+        config defaults
+                option syn_flood        1
+                option input            ACCEPT
+                option output           ACCEPT
+                option forward          REJECT
+        # Uncomment this line to disable ipv6 rules
+        #       option disable_ipv6     1
+
+        config zone
+                option name             lan
+                list   network          'lan'
+                option input            ACCEPT
+                option output           ACCEPT
+                option forward          ACCEPT
+
+        config zone
+                option name             wan
+                list   network          'wan'
+                list   network          'wan6'
+                option input            REJECT # <Change this setting to ACCEPT>
+                option output           ACCEPT
+                option forward          REJECT
+                option masq             1
+                option mtu_fix          1
+
+
+
 
 
 
