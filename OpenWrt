@@ -5,7 +5,7 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
 
 1) Download and format OpenWrt image file
 
-    The Prerequesites (Don't go further into setting up VM) steps show where to download the image, 
+    The Prerequesites steps (don't go further into setting up VM) show where to download the image, 
     and some simple commands to ready the image for use with VirtualBox:
     https://wiki.openwrt.org/doc/howto/virtualbox
 
@@ -42,11 +42,20 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
             --nonrotational "on" \
             --medium $VDI
 
-3) Now you can start the VM and SSH into it:
+3) Now you can start the VM and SSH into it and change password:
     $ ssh root@127.0.0.1 -p 2222 
-
-    You can also change the password:
     $ passwd
+
+    TROUBLESHOOT: SSH error - "ssh_exchange_identification: Connection closed by remote host"
+    --> Add this to the end of /etc/config/firewall
+
+        # Allow SSH on wan
+        config rule
+                option src              wan
+                option proto            tcp
+                option dest_port        22
+                option target           ACCEPT
+
 
 4) Finally to get LUCI accessible from a host machine's browser, edit the Firewall config:
     - Only one line needs changed in the firewall config
@@ -83,8 +92,6 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
 
 
 
-
-
 ----------------------------------
 Changing UCI Settings on Terminal
 ----------------------------------
@@ -100,6 +107,11 @@ Method 1:
 # uci commit # this updates file /etc/config/network
 # ifdown lan
 # ifup lan
+
+
+
+
+
 
 
 
