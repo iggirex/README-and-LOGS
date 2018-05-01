@@ -85,12 +85,9 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
 
 
 
-
-
-
-
-
-Changing UCI
+----------------------------------
+Changing UCI Settings on Terminal
+----------------------------------
 (https://www.gilesorr.com/blog/virtualbox-openwrt.html)
 The first problem you're likely to notice after booting is that you don't have a network. 
 OpenWRT assumes it's 192.168.1.1/24, which is rarely true with VirtualBox. I've solved the problem in two ways:
@@ -122,15 +119,9 @@ Method 1:
 
 
 
-
-
-
-
-
-
-
-
-
+UNFINISHED DOCUMENTATION
+------------------------------
+------------------------------
 
 ------------------------------
 Easy OpenWrt Setup with Docker
