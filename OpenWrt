@@ -10,7 +10,9 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
     https://wiki.openwrt.org/doc/howto/virtualbox
 
 
-2) Create a VirtualBox VM from a terminal. This script includes correct port forwarding to have SSH and
+2) Create a VirtualBox VM from a terminal. 
+
+    This script includes correct port forwarding to have SSH and
     lUCI work (almost) out of the box, only the first two lines need any changes:
 
         VMNAME="my_OpenWrt_VM" # <CHANGE NAME FOR YOUR VM HERE>
@@ -64,6 +66,8 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
 4) Finally to get LUCI accessible from a host machine's browser, edit the Firewall config:
     - Only one line needs changed in the firewall config
     - Need to reboot VM after making this change
+    - After this change, LUCI is available on host machine browswer at:
+        http://127.0.0.1:8080/
 
     In terminal:
         $ vi /etc/config/firewall
@@ -96,7 +100,7 @@ Partly from: https://bit.ly/2jlNwTC (Md. Minhazul Haque)
                 option masq             1
                 option mtu_fix          1
 
-
+    Visit LUCI page at http://127.0.0.1:8080/
 
 ----------------------------------
 Changing UCI Settings on Terminal
