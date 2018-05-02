@@ -64,3 +64,26 @@ local maxNum = (a > b) and a or b
 -- This is similar to the Javascript:
 -- var maxNum = (a > b) ? a : b;
 
+
+------------------------------------------
+Control Flow
+------------------------------------------
+
+
+JavaScript	                            Lua
+while (condition) { … }	                while condition do … end
+do { … } while (condition)	            repeat … until condition
+for (var i =start; i <=end; i++) { … }	for i =start, end do … end
+for (key in object) { … }	            for key, value = pairs(object) do … end
+for (value of object) { … } (ES6)	    for key, value = pairs(object) do … end
+if (condition) {…} [else {…}]	        if condition1 do … [elseif conditition2 then …] [else …] end
+
+
+FOR LOOP IN LUA
+
+    local i = startValue()    -- Initialize.
+    while myCondition(i) do   -- Check a loop condition.
+    doLoopBody()
+    i = step(i)             -- Update any loop variables.
+    end
+
