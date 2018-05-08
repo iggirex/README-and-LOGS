@@ -1,4 +1,60 @@
-OMG ----> @media queries are AWESOME!!
+================
+TERMINOLOGY
+================
+
+RULESET:
+
+    .container {
+        width: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+PARTS OF RULESETS:
+
+    SELECTOR {
+        PROPERTY: VALUE;
+        PROPERTY: VALUE;
+    }
+
+DECLARATION: Each property-value pair (a single line)
+DECLARATION BLOCK: Everything between curly braces
+
+DIFFERENT TYPES OF STYLESHEETS:
+
+    1) EXTERNAL: CSS written in its own file (PREFERRED)
+                linked by link element in HTML file.
+                href: path to external CSS file
+                rel: says that this is a stylesheet
+                type="text/css" NO LONGER NEEDED AS OF HTML5
+                forward slash NOT needed in link element
+
+            EX: <link rel="stylesheet" href="css/styles.css">
+
+    2) INLINE: CSS written in an HTML file as part of an HTML element
+
+            EX: <h2 syle="font-size: 10px; color: red;">
+                    lorem ipsum here
+                </h2>
+
+    3) EMBEDDED: CSS written in HEAD of HTML file (not good)
+
+            EX: <style>
+                    .h2{
+                        font-size: 10px
+                    }
+                </style>
+
+    
+
+1234567890123456789012345678901234567890123456789012345678901234567890123456789011111111111111111111111111111111111111111111
+
+
+
+
+
+
+MEDIA QUERIES
 
 @media all and (min-width: 480px) {
     THIS WILL WORK at 480px width and ABOVE!
