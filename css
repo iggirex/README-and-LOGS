@@ -1,6 +1,10 @@
-================
+=================
+CSS FOUNDATIONS
+=================
+
+--------------
 TERMINOLOGY
-================
+--------------
 
 RULESET:
 
@@ -20,9 +24,11 @@ PARTS OF RULESETS:
 DECLARATION: Each property-value pair (a single line)
 DECLARATION BLOCK: Everything between curly braces
 
+-------------------------------
 DIFFERENT TYPES OF STYLESHEETS:
+-------------------------------
 
-    1) EXTERNAL: CSS written in its own file (PREFERRED)
+    1) EXTERNAL: CSS written in its own file (PREFERRED WAY)
                 linked by link element in HTML file.
                 href: path to external CSS file
                 rel: says that this is a stylesheet
@@ -31,13 +37,14 @@ DIFFERENT TYPES OF STYLESHEETS:
 
             EX: <link rel="stylesheet" href="css/styles.css">
 
-    2) INLINE: CSS written in an HTML file as part of an HTML element
+    2) INLINE: CSS written in an HTML file as part of an HTML element (WORST WAY)
+                Will overrule all embedded and external styles
 
             EX: <h2 syle="font-size: 10px; color: red;">
                     lorem ipsum here
                 </h2>
 
-    3) EMBEDDED: CSS written in HEAD of HTML file (not good)
+    3) EMBEDDED: CSS written in HEAD of HTML file (NOT GOOD)
 
             EX: <style>
                     .h2{
@@ -45,7 +52,15 @@ DIFFERENT TYPES OF STYLESHEETS:
                     }
                 </style>
 
-jkl;
+-------------
+BOX MODEL
+-------------
+
+-----------------
+BLOCK VS INLINE
+-----------------
+
+
 
 
 MEDIA QUERIES

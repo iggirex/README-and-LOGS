@@ -1,6 +1,26 @@
-mkdir -p /parentFolder/childFolder
+---------------
+MKDIR
+---------------
 
+------ NESTED FOLDERS ------
+--> use -p flag
+    mkdir -p /parentFolder/childFolder
+
+------------------------
+FINDING THINGS
+------------------------
+
+----- FIND --------
 find <in_this_dir> -name <name_of_file>
-EX:
-find / -name docker
 
+EX:
+    find / -name docker
+
+
+----- GREP --------
+
+File:
+    grep "foo" file.txt
+
+CLI command:
+    cat myfile.txt | grep "foo"
