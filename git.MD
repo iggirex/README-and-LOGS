@@ -34,13 +34,16 @@ what commit am I currently on?
 delete branch locally and remotely
 
 `$ git push <remote_name> --delete <branch_name>`
+
 `$ git branch -d <branch_name>`
 
 
 ## WORKING WITH REMOTES
 
 `git add remote <name-of-remote>`
+
 `git remote rm <name-of-remote>`
+
 `git remote -v`
 
 
