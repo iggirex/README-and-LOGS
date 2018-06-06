@@ -40,4 +40,39 @@ WORKING WITH REMOTES
     git remote -v
 
 
-REBASING
+# REBASING
+
+## INTEGRATING FEATURE BRANCH INTO INTEGRATION BRANCH
+As a high level overview- this process will include 2 different uses of ‘git rebaseʼ and 1 use of ‘git mergeʼ. Git rebase is like a swiss army knife, you can do many different things with it.
+!. FIGURE OUT HOW MANY COMMITS ARE IN FEATURE BRANCH THAT NEED TO BE SQUASHED
+git log — this will show you all commits, with the latest commit being at the top.
+Count how many commits there are from the top commit all the way down till you find the 1st commit of your feature branch.
+#. TELL GIT HOW MANY COMMITS YOU ARE LOOKING TO SQUASH (the ones you just counted)
+git rebase -i HEAD~4 — In this example, we counted 4 commits from the latest commit to the first one of the feature branch
+$. DO THE SQUASHING
+— So the RANGE OF COMMITS is expressed from (the latest) HEAD through the 4 commits before HEAD
+— A text editor will pop up after this command, this is your access to the many tools in the swiss army knife that is git rebase
+— Here we pick up at the text editor which popped up, depending on what text editor your CLI uses, it should look something similar to this:
+ ——THINGS TO KNOW AT THIS STEP
+- The keyword “pick” is one of the tools of the swiss army knife, it basically
+says “hey keep this thing the same”. We can replace that keyword to
+do different things
+- What we want to do is “squash”, so for every commit that you want to
+squash, erase the pick keyword and write squash
+- YOU CANNOT SQUASH ALL COMMITS, the act of squashing requires at
+least one commit to remain, this will be the commit that contains all
+the other squashed commits.
+- YOU CANNOT SQUASH THE FIRST COMMIT IN THIS LIST, the one at
+the top (which is the earliest of the commits). This one must remain.
+So an example where we squash these 4 commits into one would look like this:
+
+ —Next step to squashing is to SAVE the file and EXIT.
+— FINAL STEP — ANOTHER TEXT EDITOR WILL POP UP.
+For simplicityʼs sake, you can simply just EXIT out of this one. AND DONE. Do you even squash bro?
+c. THE NEW WAY TO DO A MERGE, CALLED “FAST FORWARD MERGE”
+— When you do a simple “git merge” a brand new commit is created purely to commemorate the act of this merge. This is clutter that we want to avoid.
+— So the new way to merge is
+A) Go to your feature branch — $ git checkout <my-feature-branch> B) Rebase feature branch onto integration — $ git rebase integration C) Switch to integration — $ git checkout integration
+D) Do the merge — $ git merge <my-feature-branch>
+
+AND YA DONE.
