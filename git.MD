@@ -1,4 +1,4 @@
-UNDO THIS THING I JUST DID!
+## UNDO THIS THING I JUST DID!
 
     Unstaged (Un-added) files that have changed:
     $ git clean -f
@@ -17,7 +17,7 @@ UNDO THIS THING I JUST DID!
     undo changes after git commit
 
 
-WHERE AM I?
+## WHERE AM I?
 
     go back and forth in commit history
     $ git checkout <commit_hash>
@@ -26,23 +26,23 @@ WHERE AM I?
     $ git show
 
 
-FUN WITH BRANCHES
+## FUN WITH BRANCHES
 
     delete branch locally and remotely
     $ git push <remote_name> --delete <branch_name>
     $ git branch -d <branch_name>
 
 
-WORKING WITH REMOTES
+## WORKING WITH REMOTES
 
     git add remote <name-of-remote>
     git remote rm <name-of-remote>
     git remote -v
 
 
-# REBASING
+## REBASING
 
-## INTEGRATING FEATURE BRANCH INTO INTEGRATION BRANCH
+### INTEGRATING FEATURE BRANCH INTO INTEGRATION BRANCH
 
 #### overview- this process will include 2 different uses of ‘git rebaseʼ and 1 use of ‘git mergeʼ. Git rebase is like a swiss army knife, you can do many different things with it.
 ##### FIGURE OUT HOW MANY COMMITS ARE IN FEATURE BRANCH THAT NEED TO BE SQUASHED
