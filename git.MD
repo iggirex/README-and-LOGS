@@ -3,18 +3,18 @@
 ## UNDO THIS THING I JUST DID!
 
     Unstaged (Un-added) files that have changed:
-    $ git clean -f
+    `$ git clean -f`
     To see what files will be affected before running this command, can do:
-    $ git clean -n
+    `$ git clean -n`
 
     undo changes before they have been "git add"ed
-    $ git checkout -- <file_name>
+    `$ git checkout -- <file_name>`
 
     stash changes before they have been "git add"ed
-    $ git stash
+    `$ git stash`
 
     undo changes after they have been "git add"ed
-    $ git reset <file_name> || git reset
+    `$ git reset <file_name> || git reset`
 
     undo changes after git commit
 
@@ -22,24 +22,24 @@
 ## WHERE AM I?
 
     go back and forth in commit history
-    $ git checkout <commit_hash>
+    `$ git checkout <commit_hash>`
 
     what commit am I currently on?
-    $ git show
+    `$ git show`
 
 
 ## FUN WITH BRANCHES
 
     delete branch locally and remotely
-    $ git push <remote_name> --delete <branch_name>
-    $ git branch -d <branch_name>
+    `$ git push <remote_name> --delete <branch_name>`
+    `$ git branch -d <branch_name>`
 
 
 ## WORKING WITH REMOTES
 
-    git add remote <name-of-remote>
-    git remote rm <name-of-remote>
-    git remote -v
+    `git add remote <name-of-remote>`
+    `git remote rm <name-of-remote>`
+    `git remote -v`
 
 
 ## REBASING
@@ -51,7 +51,7 @@
 1. git log — this will show you all commits, with the latest commit being at the top.
 2. Count how many commits there are from the top commit all the way down till you find the 1st commit of your feature branch.
 ##### TELL GIT HOW MANY COMMITS YOU ARE LOOKING TO SQUASH (the ones you just counted)
-3. git rebase -i HEAD~4
+3. `git rebase -i HEAD~4`
   * In this example, we counted 4 commits from the latest commit to the first one of the feature branch
 ##### DO THE SQUASHING
 — The RANGE OF COMMITS is expressed from (the latest) HEAD through the 4 commits before HEAD
@@ -79,9 +79,9 @@ Do you even squash bro?
 ##### THE NEW WAY TO DO A MERGE, CALLED “FAST FORWARD MERGE”
 — When you do a simple “git merge” a brand new commit is created purely to commemorate the act of this merge. This is clutter that we want to avoid.
 — So the new way to merge is
-1. Go to your feature branch — $ git checkout <my-feature-branch> 
-2. Rebase feature branch onto integration — $ git rebase integration 
-3. Switch to integration — $ git checkout integration
-4. Do the merge — $ git merge <my-feature-branch>
+1. Go to your feature branch — `$ git checkout <my-feature-branch>`
+2. Rebase feature branch onto integration — `$ git rebase integration`
+3. Switch to integration — `$ git checkout integration`
+4. Do the merge — `$ git merge <my-feature-branch>`
 
 AND DONE.
