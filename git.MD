@@ -49,12 +49,13 @@ WORKING WITH REMOTES
 1. git log — this will show you all commits, with the latest commit being at the top.
 2. Count how many commits there are from the top commit all the way down till you find the 1st commit of your feature branch.
 ##### TELL GIT HOW MANY COMMITS YOU ARE LOOKING TO SQUASH (the ones you just counted)
-3. git rebase -i HEAD~4 — In this example, we counted 4 commits from the latest commit to the first one of the feature branch
+3. git rebase -i HEAD~4
+  * In this example, we counted 4 commits from the latest commit to the first one of the feature branch
 ##### DO THE SQUASHING
 — The RANGE OF COMMITS is expressed from (the latest) HEAD through the 4 commits before HEAD
 — A text editor will pop up after this command, this is your access to the many tools in the swiss army knife that is git rebase
 — Here we pick up at the text editor which popped up, depending on what text editor your CLI uses, it should look something similar to this:
- ——THINGS TO KNOW AT THIS STEP
+##### THINGS TO KNOW AT THIS STEP
 - The keyword “pick” is one of the tools of the swiss army knife, it basically
 says “hey keep this thing the same”. We can replace that keyword to
 do different things
